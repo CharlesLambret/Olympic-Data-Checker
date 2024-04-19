@@ -1,7 +1,8 @@
 import { MongoConnection } from '../../../../db/call';
+import { ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
 
-export async function updateUser(email: string, name: string, password: string, isAdmin: boolean) {
+export async function updateUser(userId: string, email: string, name: string, password: string) {
     const client = await MongoConnection();
     const db = client.db("TP-React"); 
     const users = db.collection("users");
@@ -12,11 +13,10 @@ export async function updateUser(email: string, name: string, password: string, 
         const userData = {
             email: email,
             name: name,
-            passwordHash: passwordHash,
-            isAdmin: false
+            passwordHash: passwordHash
         };
 
-        const existing = await users.findOne({ email: email });
+        const existing = await users.findOne({ _id: new ObjectId(userId) });
         if (!existing) {
             return "User does not exist.";
         }
@@ -25,7 +25,7 @@ export async function updateUser(email: string, name: string, password: string, 
             return "Operation not allowed for admin users.";
         }
 
-        await users.updateOne({ email: email }, { $set: userData });
+        await users.updateOne({ _id: new ObjectId(userId) }, { $set: userData });
         return "User updated successfully.";
     } catch (error) {
         console.error("Update user failed:", error);
