@@ -12,7 +12,7 @@ userLogin.post("/user/login", async (req: Request, res: Response) => {
 
         if (result.success && result._id) { 
             req.session.userId = new ObjectId(result._id);
-            res.send({ message: "User logged in successfully", userId: result._id.toString() }); // Send the ObjectId as a string
+            res.send({ message: "User logged in successfully", userId: result._id.toString() }); 
         } else {
             res.status(401).send(result.message);
         }
