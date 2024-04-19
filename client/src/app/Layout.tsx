@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "../auth/pages/LoginPage";
 import SignupPage from "../auth/pages/SignupPage";
 import Stats from "@/stats/pages/Stats";
+import AdminLayout from "@/admin/Layout";
+import AuthWrapper from "@/auth/AuthWrapper";
 
 function Layout() {
   return (
@@ -16,6 +18,15 @@ function Layout() {
           }
         />
         <Route path="/stats" element={<Stats />} />
+        <Route
+          path="/medals"
+          element={
+            <AuthWrapper needAuth>
+              <h1>medals</h1>
+            </AuthWrapper>
+          }
+        />
+        <Route path="/admin/*" element={<AdminLayout />} />
       </Routes>
     </BrowserRouter>
   );

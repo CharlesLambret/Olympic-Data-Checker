@@ -16,15 +16,18 @@
     "@reduxjs/toolkit": "^2.2.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.372.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.1.1",
     "react-router-dom": "^6.22.3",
     "recharts": "^2.12.5",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
