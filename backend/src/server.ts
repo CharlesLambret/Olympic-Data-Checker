@@ -10,3 +10,7 @@ app.get("/", (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`[Server]: I am running at http://localhost:${port}`);
 });
+
+app.post("/signUp", (req: Request, res: Response) => {
+  console.log("[Server]: i have recieve a request");
+});
