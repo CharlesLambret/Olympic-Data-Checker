@@ -17,7 +17,7 @@ function Layout() {
             <h1 className="text-3xl font-bold underline">Hello world!</h1>
           }
         />
-        <Route path="/stats" element={<Stats />} />
+        <Route path="/stats" element={<AuthWrapper needAuth={false}><Stats /></AuthWrapper>} />
         <Route
           path="/medals"
           element={

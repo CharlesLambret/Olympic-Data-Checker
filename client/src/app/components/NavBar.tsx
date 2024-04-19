@@ -1,4 +1,6 @@
 import * as React from "react"
+import { useSelector } from "react-redux"
+import { RootState } from "@/app/redux/store/store"
 import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/Icons"
@@ -16,6 +18,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/Avatar"
+import { buttonVariants } from "@/components/Button"
+
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -56,9 +60,11 @@ const components: { title: string; href: string; description: string }[] = [
 ]
 
 export default function NavBar() {
+  const user = useSelector((state: RootState) => state.user.data)
+
   return (
     <div className="flex flex-row justify-between items-center border-2 border-slate-300 rounded-md p-3 my-5 w-full">
-      <div className="h-9 w-1/4">
+      <div className="h-10 w-1/4">
         <img className="h-full w-35" src="./svg/logo.svg" alt=""/>
       </div>
       <div className="flex w-2/4 justify-center">
@@ -124,12 +130,22 @@ export default function NavBar() {
         </NavigationMenuList>
       </NavigationMenu>
       </div>
-      <div className="flex w-1/4 justify-end">
-        <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      </div>
+
+      {user.id ?  
+        <div className="flex w-1/4 justify-end items-center">
+          <p className="text-slate-500 mr-4">{user.email}</p>
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div> 
+        :
+        <div className="flex w-1/4 justify-end">
+          <Link className={buttonVariants({ variant: "outline" })} to={'/login'}>Se connecter</Link>
+        </div> 
+      }
+     
+
     </div>
   )
 }
