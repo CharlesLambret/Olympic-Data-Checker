@@ -1,14 +1,15 @@
 import express, { Express, Request, Response } from "express";
-import { createAdmin } from './CRUD/users/admin/createadmin';
-import dotenv from 'dotenv';
+import { createAdmin } from "./CRUD/users/admin/createadmin";
+import dotenv from "dotenv";
+import { MongoConnection } from "./db/call";
 dotenv.config();
 
 const app: Express = express();
-app.use(express.json()); 
+app.use(express.json());
 const port = 3000;
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Hello, this is Express + TypeScript");
+  res.send("Hello, this is Express + TypeScript");
 });
 
 app.post("/create-admin", async (req: Request, res: Response) => {
@@ -26,5 +27,13 @@ app.post("/create-admin", async (req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
+});
+
+app.get("/medals", async (req: Request, res: Response) => {
+  const client = await MongoConnection();
+  const db = client.db("TP-React");
+  const collection = db.collection("medals");
+  const documents = await collection.find({}).limit(25).toArray();
+  res.send(documents);
 });
