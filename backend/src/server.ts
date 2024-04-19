@@ -12,6 +12,15 @@ app.listen(port, () => {
 });
 
 app.post("/signUp", (req: Request, res: Response) => {
-  console.log("[Server]: i have recieve a request");
-  res.send("post ");
+  console.log(Request);
+  res.send(Response);
+  // userform = response.data
+  // userdata = validator(userform)
+  // user = new User(userdata)
+});
+
+app.post("/logIn", (res: Request, res: Response) => {
+  // loginform = response.data
+  // user = User.login(loginform)
+  // add a way too indicate that the user is logged in
 });
