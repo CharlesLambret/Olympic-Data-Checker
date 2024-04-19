@@ -1,5 +1,5 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
-import dotenv from 'dotenv';
+import { MongoClient, ServerApiVersion } from "mongodb";
+import dotenv from "dotenv";
 dotenv.config();
 
 export async function MongoConnection() {
