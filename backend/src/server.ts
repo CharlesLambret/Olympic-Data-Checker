@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { readAdmin } from './CRUD/users/admin/getadmin';
+import { readAdminById, readAdmins } from './CRUD/users/admin/getadmin';
 import { updateAdmin } from './CRUD/users/admin/updateadmin';
 import { createUser } from './CRUD/users/classicuser/createuser';
 import { deleteUser } from './CRUD/users/classicuser/deleteuser';
@@ -12,10 +12,18 @@ const app = express();
 app.use(express.json());
 
 // Admin routes
+app.get("/admin/read", async (req: Request, res: Response) => {
+  try {
+    const admins = await readAdmins();
+    res.send(admins);
+  } catch (error: any) {
+    res.status(500).send("Failed to read admins: " + error.message);
+  }
+});
 app.get("/admin/read/:id", async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const admins = await readAdmin(id);
+    const admins = await readAdminById(id);
     res.send(admins);
   } catch (error: any) {
     res.status(500).send("Failed to read admin: " + error.message);
