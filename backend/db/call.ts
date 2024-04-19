@@ -1,5 +1,5 @@
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+import { MongoClient, ServerApiVersion } from 'mongodb';
 const uri = "mongodb+srv://charleslambretpro:u13PIbpkH0i5nAQ7@tp-react.dc6nil3.mongodb.net/?retryWrites=true&w=majority&appName=TP-React";
 
 const client = new MongoClient(uri, {
