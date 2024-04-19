@@ -1,7 +1,7 @@
 import { MongoConnection } from '../../../db/call';
 import bcrypt from 'bcrypt';
 
-export async function createAdmin(email: string, name: string, password: string, isAdmin: boolean) {
+export async function updateAdmin(email: string, name: string, password: string, isAdmin: boolean) {
     const client = await MongoConnection();
     const db = client.db("TP-React"); 
     const users = db.collection("users");
@@ -17,14 +17,14 @@ export async function createAdmin(email: string, name: string, password: string,
         };
 
         const existing = await users.findOne({ email: email });
-        if (existing) {
-            return "Admin already exists.";
+        if (!existing) {
+            return "Admin does not exist.";
         }
 
-        await users.insertOne(adminData);
-        return "Admin created successfully.";
+        await users.updateOne({ email: email }, { $set: adminData });
+        return "Admin updated successfully.";
     } catch (error) {
-        console.error("Create admin failed:", error);
+        console.error("Update admin failed:", error);
         throw error; 
     } finally {
         await client.close(); 

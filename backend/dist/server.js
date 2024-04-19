@@ -13,31 +13,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const call_1 = require("./db/call");
+const createadmin_1 = require("./CRUD/users/admin/createadmin");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+app.use(express_1.default.json());
 const port = 3000;
 app.get("/", (req, res) => {
     res.send("Hello, this is Express + TypeScript");
 });
-app.get("/test", (req, res) => {
-    res.send("Test");
-});
-app.get("/test-mongo", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/create-admin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, name, password, admin } = req.body;
     try {
-        const result = yield (0, call_1.MongoConnection)();
+        if (!email || !name || !password || admin === undefined) {
+            res.status(400).send("Missing required fields");
+            return;
+        }
+        const result = yield (0, createadmin_1.createAdmin)(email, name, password, admin);
         res.send(result);
     }
     catch (error) {
-        if (error instanceof Error) {
-            res.status(500).send(error.message);
-        }
-        else {
-            res.status(500).send("An unknown error occurred");
-        }
+        res.status(500).send("Failed to create admin: " + error.message);
     }
 }));
 app.listen(port, () => {
-    console.log(`[Server]: I am running at http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 });
+app.get("/test-create-admin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const email = "test@example.com";
+        const name = "Test Admin";
+        const password = "testpassword";
+        const admin = true;
+        const result = yield (0, createadmin_1.createAdmin)(email, name, password, admin);
+        res.send(result);
+    }
+    catch (error) {
+        res.status(500).send("Failed to create admin: " + error.message);
+    }
+}));

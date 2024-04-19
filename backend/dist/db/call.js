@@ -19,7 +19,9 @@ dotenv_1.default.config();
 function MongoConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         const uri = process.env.MONGO_URI;
-        const apiKey = process.env.MONGO_PRIVATE_KEY_DEV;
+        if (!uri) {
+            throw new Error("MongoDB URI is not defined in environment variables");
+        }
         const client = new mongodb_1.MongoClient(uri, {
             serverApi: {
                 version: mongodb_1.ServerApiVersion.v1,
@@ -33,16 +35,12 @@ function MongoConnection() {
         });
         try {
             yield client.connect();
-            yield client.db("admin").command({ ping: 1 });
-            console.log("Pinged your deployment. You successfully connected to MongoDB!");
-            return 'MongoDB connection successful.';
+            console.log("Connected to MongoDB!");
+            return client;
         }
         catch (error) {
-            console.error("Failed to connect to MongoDB:", error);
-            return `Failed to connect to MongoDB: ${error}`;
-        }
-        finally {
-            yield client.close();
+            console.error("Error connecting to MongoDB:", error);
+            throw error;
         }
     });
 }
