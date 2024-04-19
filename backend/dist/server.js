@@ -26,7 +26,7 @@ app.get("/test", (req, res) => {
 });
 app.get("/test-mongo", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield (0, call_1.checkMongoConnection)();
+        const result = yield (0, call_1.MongoConnection)();
         res.send(result);
     }
     catch (error) {

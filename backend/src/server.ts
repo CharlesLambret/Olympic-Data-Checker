@@ -1,44 +1,30 @@
 import express, { Express, Request, Response } from "express";
-import { checkMongoConnection } from './db/call'; 
+import { createAdmin } from './CRUD/users/admin/createadmin';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const app: Express = express();
+app.use(express.json()); 
 const port = 3000;
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello, this is Express + TypeScript");
+    res.send("Hello, this is Express + TypeScript");
 });
 
-app.get("/test", (req: Request, res: Response) => {
-  res.send("Test");
-});
-app.get("/test-mongo", async (req: Request, res: Response) => {
+app.post("/create-admin", async (req: Request, res: Response) => {
+  const { email, name, password, admin } = req.body;
   try {
-    const result = await checkMongoConnection();
-    res.send(result);
-  } catch (error: unknown) { 
-    if (error instanceof Error) {
-      res.status(500).send(error.message); 
-    } else {
-      res.status(500).send("An unknown error occurred");
+    if (!email || !name || !password || admin === undefined) {
+      res.status(400).send("Missing required fields");
+      return;
     }
+    const result = await createAdmin(email, name, password, admin);
+    res.send(result);
+  } catch (error: any) {
+    res.status(500).send("Failed to create admin: " + error.message);
   }
 });
 
 app.listen(port, () => {
-  console.log(`[Server]: I am running at http://localhost:${port}`);
-});
-
-app.post("/signUp", (req: Request, res: Response) => {
-  console.log("signUp");
-  // userform = response.data
-  // userdata = validator(userform)
-  // user = new User(userdata)
-});
-
-app.post("/logIn", (req: Request, res: Response) => {
-  // loginform = response.data
-  // user = User.login(loginform)
-  // add a way too indicate that the user is logged in
+    console.log(`Server running at http://localhost:${port}`);
 });

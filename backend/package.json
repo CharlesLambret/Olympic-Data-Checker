@@ -4,22 +4,29 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "npx tsc && nodemon dist/server.js"
-    },
+    "start": "npx tsc && nodemon dist/server.js",
+    "test": "jest"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongodb": "^6.5.0",
+    "mongodb-memory-server": "^9.1.8",
     "mongoose": "^8.3.2",
     "nodemon": "^3.1.0",
     "typescript": "^5.4.5"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/mongodb": "^4.0.7",
-    "@types/node": "^20.12.7"
+    "@types/node": "^20.12.7",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2"
   },
   "description": ""
 }
