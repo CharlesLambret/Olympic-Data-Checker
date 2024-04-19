@@ -1,8 +1,8 @@
 
 import { MongoClient, ServerApiVersion } from 'mongodb';
-const uri = "mongodb+srv://charleslambretpro:u13PIbpkH0i5nAQ7@tp-react.dc6nil3.mongodb.net/?retryWrites=true&w=majority&appName=TP-React";
+const uri = process.env.MONGO_URI;
 
-const client = new MongoClient(uri, {
+const client = new MongoClient(uri!, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
