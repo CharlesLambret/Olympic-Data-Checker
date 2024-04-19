@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { MongoConnection } from '../../../db/call';
 import bcrypt from 'bcrypt';
 
@@ -10,6 +11,7 @@ export async function createAdmin(email: string, name: string, password: string,
         const passwordHash = await bcrypt.hash(password, 10);
 
         const adminData = {
+            _id: new ObjectId(), 
             email: email,
             name: name,
             passwordHash: passwordHash,
