@@ -12,14 +12,13 @@ app.listen(port, () => {
 });
 
 app.post("/signUp", (req: Request, res: Response) => {
-  console.log(Request);
-  res.send(Response);
+  console.log("signUp");
   // userform = response.data
   // userdata = validator(userform)
   // user = new User(userdata)
 });
 
-app.post("/logIn", (res: Request, res: Response) => {
+app.post("/logIn", (req: Request, res: Response) => {
   // loginform = response.data
   // user = User.login(loginform)
   // add a way too indicate that the user is logged in
