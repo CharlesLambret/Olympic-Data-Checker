@@ -3,11 +3,11 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { UserType } from "@/auth/types/user";
 
 interface UserState {
-  user: UserType;
+  data: UserType;
 }
 
 const initialState: UserState = {
-  user: <UserType>{},
+  data: <UserType>{},
 };
 
 export const userSlice = createSlice({
@@ -15,10 +15,10 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<UserType>) => {
-      state.user = action.payload;
+      state.data = action.payload;
     },
     clearUser: (state) => {
-      state.user = <UserType>{};
+      state.data = <UserType>{};
     },
   },
 });
