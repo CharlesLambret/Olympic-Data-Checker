@@ -1,34 +1,14 @@
 import express, { Request, Response } from 'express';
-import { readAdminById, readAdmins } from './CRUD/users/admin/getadmin';
-import { updateAdmin } from './CRUD/users/admin/updateadmin';
-import { createUser } from './CRUD/users/classicuser/createuser';
-import { deleteUser } from './CRUD/users/classicuser/deleteuser';
-import { getUserById, getUsers } from './CRUD/users/classicuser/getuser';
-import { createAdmin } from './CRUD/users/admin/createadmin';
-import { updateUser } from './CRUD/users/classicuser/updateuser';
-
+import { updateAdmin } from './CRUD/users/admin/operations/updateadmin';
+import { deleteUser } from './CRUD/users/classicuser/operations/deleteuser';
+import { updateUser } from './CRUD/users/classicuser/operations/updateuser';
+import indexuser from './CRUD/users/classicuser';
+import indexadmin from './CRUD/users/admin';
 
 const app = express();
 app.use(express.json());
 
-// Admin routes
-app.get("/admin/read", async (req: Request, res: Response) => {
-  try {
-    const admins = await readAdmins();
-    res.send(admins);
-  } catch (error: any) {
-    res.status(500).send("Failed to read admins: " + error.message);
-  }
-});
-app.get("/admin/read/:id", async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id;
-    const admins = await readAdminById(id);
-    res.send(admins);
-  } catch (error: any) {
-    res.status(500).send("Failed to read admin: " + error.message);
-  }
-});
+app.use(indexuser, indexadmin)
 
 app.put("/admin/update/:id", async (req: Request, res: Response) => {
   try {
@@ -42,44 +22,12 @@ app.put("/admin/update/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/admin/create", async (req: Request, res: Response) => {
-  try {
-    const email = req.body.email;
-    const name = req.body.name;
-    const password = req.body.password;
-    await createAdmin(email, name, password, true);
-    res.send("Admin created successfully");
-  } catch (error: any) {
-    res.status(500).send("Failed to create admin: " + error.message);
-  }
-});
-
-// User routes
-app.get("/user/read/:id", async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id;
-    const user = await getUserById(id);
-    res.send(user);
-  } catch (error: any) {
-    res.status(500).send("Failed to read user: " + error.message);
-  }
-});
-
-app.get("/user/read", async (req: Request, res: Response) => {
-  try {
-    const users = await getUsers();
-    res.send(users);
-  } catch (error: any) {
-    res.status(500).send("Failed to read users: " + error.message);
-  }
-});
 
 app.post("/user/create", async (req: Request, res: Response) => {
   try {
     const email = req.body.email;
     const name = req.body.name;
     const password = req.body.password;
-    await createUser(email, name, password, true);
     res.send("User created successfully");
   } catch (error: any) {
     res.status(500).send("Failed to create user: " + error.message);

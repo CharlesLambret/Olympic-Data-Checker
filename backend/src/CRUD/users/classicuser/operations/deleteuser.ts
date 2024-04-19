@@ -1,4 +1,4 @@
-import { MongoConnection } from '../../../db/call';
+import { MongoConnection } from '../../../../db/call';
 
 export async function deleteUser(email: string) {
     const client = await MongoConnection();

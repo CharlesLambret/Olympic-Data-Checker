@@ -1,4 +1,4 @@
-import { MongoConnection } from '../../../db/call';
+import { MongoConnection } from '../../../../db/call';
 import { ObjectId } from 'mongodb';
 
 export async function getUserById(id: string) {

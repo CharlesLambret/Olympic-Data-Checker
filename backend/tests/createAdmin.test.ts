@@ -1,6 +1,6 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient, Db } from 'mongodb';
-import { createAdmin } from '../src/CRUD/users/admin/createadmin';
+import { createAdmin } from '../src/CRUD/users/admin/operations/createadmin';
 import bcrypt from 'bcrypt';
 import { MongoConnection } from '../src/db/call';
 

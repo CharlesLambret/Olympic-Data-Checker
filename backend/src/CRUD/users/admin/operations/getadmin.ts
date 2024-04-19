@@ -1,4 +1,4 @@
-import { MongoConnection } from '../../../db/call';
+import { MongoConnection } from '../../../../db/call';
 
 export async function readAdminById(id: string) {
     const client = await MongoConnection();
