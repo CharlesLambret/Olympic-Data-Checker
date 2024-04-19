@@ -17,7 +17,7 @@ export async function login(email: string, password: string) {
             return { success: false, message: "Invalid password." };
         }
 
-        return { success: true, message: "Login successful." };
+        return { success: true, message: "Login successful.", _id: user._id };
     } catch (error) {
         console.error("Login failed:", error);
         throw error; 

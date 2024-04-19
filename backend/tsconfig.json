@@ -11,6 +11,6 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   
-  "include": ["src/**/*", "tests/custom-global.d.ts"],
+  "include": ["src/**/*", "tests/custom-global.d.ts", "./custom-types.d.ts"],
   "exclude": ["node_modules"]
 }

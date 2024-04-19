@@ -1,9 +1,10 @@
 import { Request, Response, Router } from 'express';
 import { updateAdmin } from '../operations/updateadmin';
+import { isAuthenticated } from '../../../utils/isauthenticated';
 
 const adminUpdate = Router();
 
-adminUpdate.put("/admin/update/:id", async (req: Request, res: Response) => {
+adminUpdate.put("/admin/update/:id",isAuthenticated, async (req: Request, res: Response) => {
     try {
       const email = req.body.email;
       const name = req.body.name;

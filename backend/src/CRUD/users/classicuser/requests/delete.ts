@@ -1,9 +1,10 @@
 import { Request, Response, Router } from 'express';
 import { deleteUser } from '../operations/deleteuser';
+import { isAuthenticated } from '../../../utils/isauthenticated';
 
 const userDelete = Router();
 
-userDelete.delete("/user/delete/:id", async (req: Request, res: Response) => {
+userDelete.delete("/user/delete/:id",isAuthenticated, async (req: Request, res: Response) => {
     try {
       const id = req.params.id;
       await deleteUser(id);

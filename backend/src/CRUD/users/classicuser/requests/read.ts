@@ -1,9 +1,10 @@
 import { Request, Response, Router } from 'express';
 import { getUserById, getUsers } from '../operations/getuser';
+import {isAuthenticated} from '../../../utils/isauthenticated';
 
 export const userReadById = Router();
 
-userReadById.get("/user/read/:id", async (req: Request, res: Response) => {
+userReadById.get("/user/read/:id",isAuthenticated, async (req: Request, res: Response) => {
     try {
       const id = req.params.id;
       const user = await getUserById(id);

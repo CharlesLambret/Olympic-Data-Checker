@@ -3,7 +3,7 @@ import { createUser } from '../operations/createuser';
 
 const userCreate = Router();
 
-userCreate.post("/user/create", async (req: Request, res: Response) => {
+userCreate.post("/user/signup", async (req: Request, res: Response) => {
     try {
       const email = req.body.email;
       const name = req.body.name;

@@ -1,9 +1,10 @@
 import { Request, Response, Router } from 'express';
 import { readAdminById, readAdmins } from '../operations/getadmin';
+import {isAuthenticated} from '../../../utils/isauthenticated';
 
 export const adminRead = Router();
 
-adminRead.get("/admin/read", async (req: Request, res: Response) => {
+adminRead.get("/admin/read",isAuthenticated, async (req: Request, res: Response) => {
     try {
       const admins = await readAdmins();
       res.send(admins);

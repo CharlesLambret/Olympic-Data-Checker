@@ -3,15 +3,19 @@ import userCreate from './requests/create';
 import {userRead, userReadById} from './requests/read';
 import userUpdate from './requests/update';
 import userDelete from './requests/delete';
-import userLogin from './requests/login';
+import {userLogin, userLogout} from './requests/auth';
 
 const indexuser = Router();
 
-indexuser.use(userCreate);
-indexuser.use(userRead);
-indexuser.use(userReadById);
-indexuser.use(userUpdate);
-indexuser.use(userDelete);
-indexuser.use(userLogin);
+indexuser.use(
+    userCreate, 
+    userRead, 
+    userReadById, 
+    userUpdate, 
+    userDelete, 
+    userLogin, 
+    userLogout
+);
+
 
 export default indexuser;
