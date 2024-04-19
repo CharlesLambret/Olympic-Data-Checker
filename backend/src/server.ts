@@ -29,3 +29,16 @@ app.get("/test-mongo", async (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`[Server]: I am running at http://localhost:${port}`);
 });
+
+app.post("/signUp", (req: Request, res: Response) => {
+  console.log("signUp");
+  // userform = response.data
+  // userdata = validator(userform)
+  // user = new User(userdata)
+});
+
+app.post("/logIn", (req: Request, res: Response) => {
+  // loginform = response.data
+  // user = User.login(loginform)
+  // add a way too indicate that the user is logged in
+});
