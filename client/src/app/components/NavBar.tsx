@@ -63,7 +63,7 @@ export default function NavBar() {
   const user = useSelector((state: RootState) => state.user.data)
 
   return (
-    <div className="flex flex-row justify-between items-center border-2 border-slate-300 rounded-md p-3 my-5 w-full">
+    <div className="flex flex-row justify-between items-center border border-slate-300 rounded-md p-3 my-5 w-full">
       <div className="h-10 w-1/4">
         <img className="h-full w-35" src="./svg/logo.svg" alt=""/>
       </div>
