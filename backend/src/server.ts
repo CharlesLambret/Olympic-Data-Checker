@@ -13,4 +13,5 @@ app.listen(port, () => {
 
 app.post("/signUp", (req: Request, res: Response) => {
   console.log("[Server]: i have recieve a request");
+  res.send("post ");
 });

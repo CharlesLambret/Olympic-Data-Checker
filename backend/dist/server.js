@@ -10,5 +10,9 @@ app.get("/", (req, res) => {
     res.send("Hello, this is Express + TypeScript");
 });
 app.listen(port, () => {
-    console.log(`[Server]: I am running at https://localhost:${port}`);
+    console.log(`[Server]: I am running at http://localhost:${port}`);
+});
+app.post("/signUp", (req, res) => {
+    console.log("[Server]: i have recieve a request");
+    res.send("post ");
 });
