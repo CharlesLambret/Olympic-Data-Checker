@@ -23,9 +23,9 @@ app.use(express_1.default.json());
 app.use(classicuser_1.default, admin_1.default);
 app.put("/admin/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const email = req.params.email;
-        const name = req.params.name;
-        const password = req.params.password;
+        const email = req.body.email;
+        const name = req.body.name;
+        const password = req.body.password;
         yield (0, updateadmin_1.updateAdmin)(email, name, password, true);
         res.send("Admin updated successfully");
     }

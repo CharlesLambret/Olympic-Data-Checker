@@ -12,16 +12,15 @@ app.use(indexuser, indexadmin)
 
 app.put("/admin/update/:id", async (req: Request, res: Response) => {
   try {
-    const email = req.params.email;
-    const name = req.params.name;
-    const password = req.params.password;
+    const email = req.body.email;
+    const name = req.body.name;
+    const password = req.body.password;
     await updateAdmin(email, name, password, true);
     res.send("Admin updated successfully");
   } catch (error: any) {
     res.status(500).send("Failed to update admin: " + error.message);
   }
 });
-
 
 app.post("/user/create", async (req: Request, res: Response) => {
   try {

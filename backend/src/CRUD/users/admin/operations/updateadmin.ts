@@ -1,5 +1,4 @@
 import { MongoConnection } from '../../../../db/call';
-import { ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
 
 export async function updateAdmin(email: string, name: string, password: string, isAdmin: boolean) {
@@ -11,7 +10,6 @@ export async function updateAdmin(email: string, name: string, password: string,
         const passwordHash = await bcrypt.hash(password, 10);
 
         const adminData = {
-            _id: new ObjectId(), 
             email: email,
             name: name,
             passwordHash: passwordHash,
