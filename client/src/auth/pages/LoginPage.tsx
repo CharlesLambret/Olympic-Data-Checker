@@ -1,5 +1,11 @@
+import { Input } from "@/app/components/Input";
+
 const LoginPage = () => {
-  return <h1>Login page</h1>;
+  return (
+    <>
+      <Input placeholder="email" />
+    </>
+  );
 };
 
 export default LoginPage;
