@@ -2,7 +2,6 @@ import express from 'express';
 import indexuser from './CRUD/users/classicuser';
 import indexadmin from './CRUD/users/admin/indexusers';
 import session from 'express-session';
-import indexinsertion from './CRUD/insertiondata/indexcreer';
 import indexolympics from './CRUD/olympics/indexolympics';
 const app = express();
 app.use(express.json());
@@ -18,7 +17,6 @@ app.use(session({
 app.use(
   indexuser, 
   indexadmin, 
-  indexinsertion,
   indexolympics
 );
 
