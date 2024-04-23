@@ -1,8 +1,9 @@
 import express from 'express';
 import indexuser from './CRUD/users/classicuser';
-import indexadmin from './CRUD/users/admin';
+import indexadmin from './CRUD/users/admin/indexusers';
 import session from 'express-session';
-
+import indexinsertion from './CRUD/insertiondata/indexcreer';
+import indexolympics from './CRUD/olympics/indexolympics';
 const app = express();
 app.use(express.json());
 
@@ -14,7 +15,12 @@ app.use(session({
   cookie: { secure: 'auto', httpOnly: true }
 }));
 
-app.use(indexuser, indexadmin)
+app.use(
+  indexuser, 
+  indexadmin, 
+  indexinsertion,
+  indexolympics
+);
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
