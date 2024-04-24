@@ -37,48 +37,45 @@ creerathlete.post('/upload-athletes', async (req: Request, res: Response) => {
     }));
 
     const athletesData: Athlete[] = [];
-
+    const BATCH_SIZE = 1000; // Taille du lot d'insertion
+    let batch: { _id: ObjectId; Nom: any; Discipline: any; Age: number | null; Poids: number | null; Taille: number | null; Sexe: any; PaysID: ObjectId; }[] = [];
+    
     parser.on('readable', () => {
         let record;
-        while (record = parser.read()) {
-            const countryId = countryMap.get(record.Team.trim());
-            if (countryId) {
-                athletesData.push({
-                    _id: new ObjectId(),
-                    Nom: record.Name.trim(),
-                    Discipline: record.Sport.trim(),
-                    Age: record.Age === 'NA' ? null : parseInt(record.Age),
-                    Poids: record.Weight === 'NA' ? null : parseInt(record.Weight),
-                    Taille: record.Height === 'NA' ? null : parseInt(record.Height),
-                    Sexe: record.Sex.trim(),
-                    PaysID: countryId
-                });
+        while ((record = parser.read())) {
+            if (record.Medal !== 'NA') { // Filtre les entrées sans médaille
+                const countryId = countryMap.get(record.Team.trim());
+                if (countryId) {
+                    batch.push({
+                        _id: new ObjectId(),
+                        Nom: record.Name.trim(),
+                        Discipline: record.Sport.trim(),
+                        Age: record.Age === 'NA' ? null : parseInt(record.Age),
+                        Poids: record.Weight === 'NA' ? null : parseInt(record.Weight),
+                        Taille: record.Height === 'NA' ? null : parseInt(record.Height),
+                        Sexe: record.Sex.trim(),
+                        PaysID: countryId
+                    });
+                }
+    
+                if (batch.length >= BATCH_SIZE) {
+                    athletes.insertMany(batch, { ordered: false })
+                        .then(result => console.log(`Inserted ${result.insertedCount} athletes`))
+                        .catch(error => console.error('Batch insert error:', error));
+                    batch = []; // Réinitialiser le lot après l'insertion
+                }
             }
         }
     });
-
+    
     parser.on('end', async () => {
-        if (athletesData.length > 0) {
-            try {
-                const result = await athletes.insertMany(athletesData, { ordered: false });
-                console.log(`Successfully inserted ${result.insertedCount} athletes.`);
-                res.status(201).send(`${result.insertedCount} athletes successfully inserted.`);
-            } catch (error: any) {
-                if (error.code === 11000) { 
-                    console.error('Duplicate athlete entries were not inserted.');
-                    res.status(409).send('Some athletes could not be inserted due to duplicates.');
-                } else {
-                    console.error('Failed to insert athletes:', error);
-                    res.status(500).send('Failed to insert athletes due to a server error.');
-                }
-            } finally {
-                await client.close();
-            }
-        } else {
-            console.log("No athletes to insert, skipping database operation.");
-            res.status(400).send("No athletes data to insert, check your data or matching logic.");
-            await client.close();
+        if (batch.length > 0) { // Insérer le dernier lot si nécessaire
+            athletes.insertMany(batch, { ordered: false })
+                .then(result => console.log(`Inserted ${result.insertedCount} athletes`))
+                .catch(error => console.error('Final batch insert error:', error));
         }
+        console.log("Finished processing CSV data.");
+        res.status(201).send("Athlete data upload completed successfully.");
     });
 
     parser.on('error', error => {

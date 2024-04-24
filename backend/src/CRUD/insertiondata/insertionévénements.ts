@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { MongoConnection } from '../../db/call';
-import { ObjectId } from 'mongodb';
+import { Document, ObjectId, OptionalId } from 'mongodb';
 import { createReadStream } from 'fs';
 import { parse } from 'csv-parse';
 import { error } from 'console';
@@ -13,20 +13,19 @@ creerevenements.post('/upload-events', async (req: Request, res: Response) => {
     const events = db.collection("evenements");
     const jeux = db.collection("jeux");
 
-    // Prepare to map games with events
     const jeuxMap = new Map<string, ObjectId>();
 
-    // Retrieve all games to map them by year and season
     const allGames = await jeux.find({}).toArray();
     allGames.forEach(game => {
         const gameKey = `${game.Annee}-${game.Saison}`;
         jeuxMap.set(gameKey, game._id);
     });
 
-    // Ensure uniqueness of events for each games edition
     await events.createIndex({ "JeuxID": 1, "NomEvent": 1 }, { unique: true });
 
-    // CSV parser setup
+    const BATCH_SIZE = 1000;
+    let batch: OptionalId<Document>[] | { _id: ObjectId; Discipline: any; NomEvent: any; JeuxID: ObjectId; }[] = [];
+
     const parser = createReadStream('./athlete_events.csv').pipe(parse({
         columns: true,
         skip_empty_lines: true
@@ -35,23 +34,35 @@ creerevenements.post('/upload-events', async (req: Request, res: Response) => {
     parser.on('readable', () => {
         let record;
         while ((record = parser.read()) !== null) {
-            const jeuxKey = `${record.Year}-${record.Season}`;
-            const jeuxID = jeuxMap.get(jeuxKey);
+            if (record.Medal !== 'NA') {  // Ne traiter que les événements où une médaille a été attribuée
+                const jeuxKey = `${record.Year}-${record.Season}`;
+                const jeuxID = jeuxMap.get(jeuxKey);
 
-            if (jeuxID) {
-                events.insertOne({
-                    _id: new ObjectId(),
-                    Discipline: record.Sport.trim(),
-                    NomEvent: record.Event.trim(),
-                    JeuxID: jeuxID
-                }).catch(error => {
-                    console.error('Error inserting document:', error);
-                });
+                if (jeuxID) {
+                    batch.push({
+                        _id: new ObjectId(),
+                        Discipline: record.Sport.trim(),
+                        NomEvent: record.Event.trim(),
+                        JeuxID: jeuxID
+                    });
+
+                    if (batch.length >= BATCH_SIZE) {
+                        events.insertMany(batch, { ordered: false })
+                            .then(result => console.log(`Inserted ${result.insertedCount} events`))
+                            .catch(error => console.error('Batch insert error:', error));
+                        batch = [];  // Réinitialiser le lot après l'insertion
+                    }
+                }
             }
         }
     });
 
     parser.on('end', () => {
+        if (batch.length > 0) {  // Insérer le dernier lot si nécessaire
+            events.insertMany(batch, { ordered: false })
+                .then(result => console.log(`Inserted ${result.insertedCount} events`))
+                .catch(error => console.error('Final batch insert error:', error));
+        }
         console.log("All events have been processed.");
         res.status(201).send("Event data upload completed successfully.");
     });
