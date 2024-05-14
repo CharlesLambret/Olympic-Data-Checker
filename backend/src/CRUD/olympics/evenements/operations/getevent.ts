@@ -1,4 +1,3 @@
-import { ParsedQs } from 'qs';
 import { MongoConnection } from '../../../../db/call';
 import { ObjectId } from 'mongodb';
 
@@ -25,7 +24,6 @@ export async function searchEventsByName(eventName: string ) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
     const events = db.collection("evenements");
-    console.log('un élément du tableau event :', await events.findOne())
     try {
         console.log(`Searching for events with name: ${eventName}`);  
         const eventsList = await events.find({ NomEvent: { $regex: new RegExp(eventName, 'i') }}).toArray();
