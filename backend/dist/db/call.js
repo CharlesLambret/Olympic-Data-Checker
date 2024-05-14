@@ -55,7 +55,6 @@ function MongoConnection() {
         });
         try {
             yield client.connect();
-            console.log("Connected to MongoDB!");
             return client;
         }
         catch (error) {

@@ -91,7 +91,7 @@ Remplacer ":id" par l'ID de l'utilisateur à supprimer.
     ```
 - **Response**:
     - Status 201: Successfully created.
-Status 500: Failed to create athlete.
+    - Status 500: Failed to create athlete.
 
 #### Delete Athlete
 - **URL**: `/deleteathlete/:id`
@@ -202,11 +202,59 @@ Status 500: Failed to create athlete.
 ### Jeux 
 
 #### Create Jeux 
-#### Delete Jeux
-#### Get Jeux
-#### Search Jeux
-#### Update Jeux
+- **URL**: `/creategame`
+- **Method**: POST
+- **Description**: Crée un nouveau jeu avec les détails fournis.
+- **Request Body**:
+  ```json
+  {
+    "Annee": "number",
+    "Saison": "string",
+    "Ville": "string"
+  }
+- **Response**:
+    - Status 201: Successfully created.
+    - Status 500: Failed to create game.
 
+#### Delete Jeux
+- **URL**: /deletegame/:id
+- **Method**: DELETE
+- **Description**: Supprime un jeu par ID.
+- **Response**:
+    - Status 200: Successfully deleted.
+    - Status 404: Game not found.
+    - Status 500: Failed to delete game.
+
+#### Get Jeux
+- **URL**: /getgames
+- **Method**: GET
+- **Description**: Recherche des jeux par année.
+- **Query Parameters**: year
+- **Response**:
+    - Status 200: Successfully retrieved.
+    - Status 500: Failed to read games.
+
+#### Search Jeux
+- **URL**: /getgame/:id
+- **Method**: GET
+- **Description**: Récupère un jeu par ID.
+- **Response**:
+    - Status 200: Successfully retrieved.
+    - Status 500: Failed to read game.
+
+#### Update Jeux
+Mettre à jour Jeux
+- **URL**: /updategame/:id
+- **Method**: PUT
+- **Description**: Met à jour les détails d'un jeu par ID.
+- **Request Body**:
+  ```json
+  {
+    "Annee": "number",
+    "Saison": "string",
+    "Ville": "string"
+  }
+  
 ### Medailles
 
 #### Create Medaille

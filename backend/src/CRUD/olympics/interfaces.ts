@@ -31,3 +31,10 @@ export interface Country {
     region : string;
     notes : string;
 }
+
+export interface Game {
+    _id : ObjectId;
+    Annee : number;
+    Saison : 'Summer' | 'Winter';
+    Ville : string;
+}

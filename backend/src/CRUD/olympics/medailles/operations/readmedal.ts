@@ -1,4 +1,3 @@
-import { ParsedQs } from 'qs';
 import { MongoConnection } from '../../../../db/call';
 import { ObjectId } from 'mongodb';
 
