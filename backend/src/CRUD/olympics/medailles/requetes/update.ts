@@ -4,7 +4,6 @@ import { ObjectId } from "mongodb";
 import { Medal } from "../../interfaces";
 
 
-
 export const updatMedal = express.Router();
 
 updatMedal.put('/updatemedal/:id', async (req, res)   => {
