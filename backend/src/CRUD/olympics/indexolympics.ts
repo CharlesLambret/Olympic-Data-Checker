@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import indexathletes from './athletes/indexathletes';
 import indexevenements from './evenements/indexevenements';
+import indexmedailles from './medailles/indexmedailles';
 
-const indexolympics = Router();
+
+export const indexolympics = Router();
 
 indexolympics.use(
     indexathletes,
-    indexevenements
+    indexevenements,
+    indexmedailles
 );
 
 export default indexolympics;

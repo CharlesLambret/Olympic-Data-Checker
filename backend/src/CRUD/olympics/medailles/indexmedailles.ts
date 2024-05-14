@@ -4,10 +4,13 @@ import { deletMedal } from './requetes/delete';
 import { getMedal } from './requetes/read';
 import { updatMedal } from './requetes/update';
 
-const indexmedailles = Router();
+export const indexmedailles = Router();
 
 indexmedailles.use(
- 
+    creatMedal,
+    deletMedal,
+    getMedal,
+    updatMedal
 );
 
 export default indexmedailles;
