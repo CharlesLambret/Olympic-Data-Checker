@@ -5,7 +5,7 @@ import { Country } from '../../interfaces';
 
 export const creatCountry = express.Router();
 
-creatCountry.post('/createcountries', async (req, res)  => {
+creatCountry.post('/createcountry', async (req, res)  => {
     try {
         const { noc, region, notes } = req.body as Country;
         const newCountry = {
