@@ -11,3 +11,9 @@ export interface Athlete {
     PaysID: ObjectId;
 }
 
+export interface Event {
+    _id : ObjectId;
+    Discipline: string;
+    NomEvent: string;
+    JeuxID: ObjectId;
+}
