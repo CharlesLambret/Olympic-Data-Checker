@@ -17,3 +17,10 @@ export interface Event {
     NomEvent: string;
     JeuxID: ObjectId;
 }
+
+export interface Medal {
+    _id: ObjectId;
+    AthleteID: ObjectId;
+    EventID: ObjectId;
+    NomMedaille : 'Or' | 'Argent' | 'Bronze';
+}
