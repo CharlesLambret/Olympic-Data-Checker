@@ -1,5 +1,6 @@
 import { MongoConnection } from '../../../../db/call';
 import { ObjectId } from 'mongodb';  
+
 export async function getAthleteById(id: string | number) {
     const client = await MongoConnection();
     const db = client.db("TP-React");

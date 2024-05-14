@@ -34,7 +34,7 @@ creerevenements.post('/upload-events', async (req: Request, res: Response) => {
     parser.on('readable', () => {
         let record;
         while ((record = parser.read()) !== null) {
-            if (record.Medal !== 'NA') {  // Ne traiter que les événements où une médaille a été attribuée
+            if (record.Medal !== 'NA') {
                 const jeuxKey = `${record.Year}-${record.Season}`;
                 const jeuxID = jeuxMap.get(jeuxKey);
 
@@ -50,7 +50,7 @@ creerevenements.post('/upload-events', async (req: Request, res: Response) => {
                         events.insertMany(batch, { ordered: false })
                             .then(result => console.log(`Inserted ${result.insertedCount} events`))
                             .catch(error => console.error('Batch insert error:', error));
-                        batch = [];  // Réinitialiser le lot après l'insertion
+                        batch = [];
                     }
                 }
             }
@@ -58,7 +58,7 @@ creerevenements.post('/upload-events', async (req: Request, res: Response) => {
     });
 
     parser.on('end', () => {
-        if (batch.length > 0) {  // Insérer le dernier lot si nécessaire
+        if (batch.length > 0) {
             events.insertMany(batch, { ordered: false })
                 .then(result => console.log(`Inserted ${result.insertedCount} events`))
                 .catch(error => console.error('Final batch insert error:', error));
