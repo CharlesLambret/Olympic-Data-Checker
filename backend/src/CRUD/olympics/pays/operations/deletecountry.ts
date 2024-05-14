@@ -1,12 +1,12 @@
 import { MongoConnection } from '../../../../db/call';
 import { ObjectId } from 'mongodb';  
-import { Medal } from '../../interfaces';
+import { Country } from '../../interfaces';
 
 
-export async function deleteMedal(countryId: ObjectId): Promise<boolean> {
+export async function deleteCountry(countryId: ObjectId): Promise<boolean> {
     const client = await MongoConnection();
     const db = client.db("TP-React");
-    const countries = db.collection<Medal>("evenements");
+    const countries = db.collection<Country>("countries");
 
     try {
         const result = await countries.deleteOne({_id: new ObjectId(countryId)});

@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 export async function getMedalById(id: string | number) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
-    const medals = db.collection("medailles");
+    const medals = db.collection("countries");
 
     try {
         const medal = await medals.findOne({ _id: new ObjectId(id) });
@@ -24,7 +24,7 @@ export async function getMedalById(id: string | number) {
 export async function searchMedalsByAthlete(athleteID: string ) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
-    const medals = db.collection("medailles");
+    const medals = db.collection("countries");
     console.log('un élément du tableau medal :', await medals.findOne())
     try {
         console.log(`Searching for medals associated with athlete ${athleteID}`);  

@@ -1,5 +1,5 @@
 import express, { Request, Router } from "express";
-import { updateMedal } from "../operations/updateMedal";
+import { updateMedal } from "../operations/updatemedal";
 import { ObjectId } from "mongodb";
 import { Medal } from "../../interfaces";
 

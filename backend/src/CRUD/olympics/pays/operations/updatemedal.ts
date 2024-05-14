@@ -5,7 +5,7 @@ import { Medal } from '../../interfaces';
 export async function updateMedal(medalId: ObjectId, updatedMedal: Medal): Promise<Medal | string> {
     const client = await MongoConnection();
     const db = client.db("TP-React");
-    const medals = db.collection<Medal>("evenements");
+    const medals = db.collection<Medal>("countries");
 
     try {
         const result = await medals.updateOne({_id: new ObjectId(medalId)}, {$set: updatedMedal});
