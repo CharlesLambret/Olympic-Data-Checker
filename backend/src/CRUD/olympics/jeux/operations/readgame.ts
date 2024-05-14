@@ -24,7 +24,6 @@ export async function searchGamesByYear(year: number ) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
     const games = db.collection("jeux");
-    console.log('un élément du tableau game :', await games.findOne())
     try {
         console.log(`Searching for games associated with athlete ${year}`);  
         const gamesList = await games.find({ Annee : { year }}).toArray();
