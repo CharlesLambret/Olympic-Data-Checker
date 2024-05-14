@@ -1,27 +1,27 @@
 import express from "express";
-import { getMedalById, searchMedalsByAthlete } from "../operations/readmedal";
+import { getCountryById, searchCountriesByName } from "../operations/readcountry";
 import { ObjectId } from "mongodb";
 
-export const getMedal = express.Router();
+export const getCountry = express.Router();
 
-getMedal.get('/getmedals/:id', async (req, res) => {
+getCountry.get('/getcountries/:name', async (req, res) => {
     try {
-        const athleteId = req.params.id ; 
-        const medals = await searchMedalsByAthlete(athleteId); 
+        const name = req.body.name as string;
+        const medals = await searchCountriesByName(name); 
         res.send(medals);
     } catch (error: any) {
         res.status(500).send("Failed to read medals: " + error.message);
     }
 });
 
-getMedal.get('/getmedal/:id', async (req, res) => {
+getCountry.get('/getcountry/:id', async (req, res) => {
     try {
-        const id = req.params.id;
-        const medal = await getMedalById(id); 
+        const id = req.params.id as string;
+        const medal = await getCountryById(id); 
         res.send(medal);
     } catch (error: any) {
         res.status(500).send("Failed to read medal: " + error.message);
     }
 });
 
-export default getMedal;
+export default getCountry;

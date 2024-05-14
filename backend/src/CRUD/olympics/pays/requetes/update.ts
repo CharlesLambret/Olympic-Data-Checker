@@ -1,27 +1,27 @@
 import express, { Request, Router } from "express";
-import { updateMedal } from "../operations/updatemedal";
+import { updateCountry } from "../operations/updatecountry";
 import { ObjectId } from "mongodb";
-import { Medal } from "../../interfaces";
+import { Country } from "../../interfaces";
 
 
-export const updatMedal = express.Router();
+export const updatCountry = express.Router();
 
-updatMedal.put('/updatemedal/:id', async (req, res)   => {
+updatCountry.put('/updatecountry/:id', async (req, res)   => {
     const { id } = req.params;
     const objectId = new ObjectId(id);
-    const updateData: Medal = {
+    const updateData: Country = {
         ...req.body,
         _id: objectId
     };
     try {
-        const result = await updateMedal(objectId, updateData);
+        const result = await updateCountry(objectId, updateData);
         if (result) {
             res.status(200).send(result);
         } else {
-            res.status(404).send("Medal not found.");
+            res.status(404).send("Country not found.");
         }
     } catch (error: any) {
-        console.error("Failed to update medal:", error);
-        res.status(500).send("Failed to update medal: " + error.message);
+        console.error("Failed to update country:", error);
+        res.status(500).send("Failed to update country: " + error.message);
     }
 });
