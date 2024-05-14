@@ -13,4 +13,3 @@ indexmedailles.use(
     updatMedal
 );
 
-export default indexmedailles;
