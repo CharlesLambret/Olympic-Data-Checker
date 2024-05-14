@@ -24,3 +24,10 @@ export interface Medal {
     EventID: ObjectId;
     NomMedaille : 'Or' | 'Argent' | 'Bronze';
 }
+
+export interface Country {
+    _id : ObjectId;
+    noc : string;
+    region : string;
+    notes : string;
+}
