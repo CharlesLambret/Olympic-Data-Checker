@@ -5,6 +5,9 @@ import session from "express-session";
 import indexolympics from "./CRUD/olympics/indexolympics";
 import cors from "cors";
 
+import { createServer } from "http";
+import { Server, WebSocket } from "ws";
+
 const app = express();
 app.use(express.json());
 app.use(
@@ -14,16 +17,38 @@ app.use(
   })
 );
 
-app.use(session({
-  secret: '8xxR1ZXfXUMKYqcsdhCU',
-  resave: false,
-  saveUninitialized: false,
-  name: 'connect.sid',
-  cookie: { secure: 'auto', httpOnly: true }
-}));
+app.use(
+  session({
+    secret: "8xxR1ZXfXUMKYqcsdhCU",
+    resave: false,
+    saveUninitialized: false,
+    name: "connect.sid",
+    cookie: { secure: "auto", httpOnly: true },
+  })
+);
 
-app.use(indexuser, indexadmin, indexolympics);
+let connections: any[] = [];
 
-app.listen(3000, () => {
+const server = createServer(app);
+
+const wss = new Server({ server });
+
+wss.on("connection", (ws: WebSocket) => {
+  connections.push(ws);
+
+  ws.on("message", (message: string) => {
+    ws.send("Message reçu");
+  });
+
+  ws.on("close", () => {
+    connections = connections.filter((conn) => conn !== ws);
+  });
+
+  ws.send("Bienvenue sur le serveur WebSocket");
+});
+
+server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
+
+app.use(indexuser, indexadmin, indexolympics);

@@ -5,6 +5,7 @@ import Stats from "@/stats/pages/Stats";
 import AdminLayout from "@/admin/Layout";
 import AuthWrapper from "@/auth/AuthWrapper";
 import SingleAthlete from "@/athletes/pages/SingleAthlete";
+import OlympicEvents from "../api/testcallapi";
 
 function Layout() {
   return (
@@ -43,6 +44,7 @@ function Layout() {
           }
         />
         <Route path="/admin/*" element={<AdminLayout />} />
+        <Route path="/testapi" element={<OlympicEvents/>} />
       </Routes>
     </BrowserRouter>
   );
