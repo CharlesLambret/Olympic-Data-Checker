@@ -24,7 +24,6 @@ export async function searchMedalsByAthlete(athleteID: string ) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
     const medals = db.collection("medailles");
-    console.log('un élément du tableau medal :', await medals.findOne())
     try {
         console.log(`Searching for medals associated with athlete ${athleteID}`);  
         const medalsList = await medals.find({ AthleteID : { athleteID }}).toArray();

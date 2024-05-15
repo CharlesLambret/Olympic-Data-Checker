@@ -4,6 +4,9 @@ import session from 'express-session';
 import indexuser from './CRUD/users/classicuser';
 import indexadmin from './CRUD/users/admin/indexusers';
 import indexolympics from './CRUD/olympics/indexolympics';
+import { index2024 } from './API/index2024';
+import { createServer } from 'http';
+import { WebSocketServer } from 'ws';
 
 import { createServer } from 'http';
 import { Server, WebSocket } from 'ws';
@@ -48,7 +51,8 @@ wss.on('connection', (ws: WebSocket) => {
 app.use(
   indexuser, 
   indexadmin, 
-  indexolympics
+  indexolympics,
+  index2024
 );
 
 // ---------------- Confirmation ---------------- //
