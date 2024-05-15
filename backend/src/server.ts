@@ -1,20 +1,13 @@
 import express from 'express';
 import indexuser from './CRUD/users/classicuser';
 import indexadmin from './CRUD/users/admin/indexusers';
-import session from 'express-session';
 import indexolympics from './CRUD/olympics/indexolympics';
 import { index2024 } from './API/index2024';
+import { createServer } from 'http';
+import { WebSocketServer } from 'ws';
 
 const app = express();
 app.use(express.json());
-
-// app.use(session({
-//   secret: '8xxR1ZXfXUMKYqcsdhCU',
-//   resave: false,
-//   saveUninitialized: false,
-//   name: 'connect.sid',
-//   cookie: { secure: 'auto', httpOnly: true }
-// }));
 
 app.use(
   indexuser, 
@@ -23,7 +16,21 @@ app.use(
   index2024
 );
 
+const server = createServer(app);
 
-app.listen(3000, () => {
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    ws.send('Message reçu');
+  });
+
+  ws.on('close', () => {
+  });
+
+  ws.send('Bienvenue sur le serveur WebSocket');
+});
+
+server.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
