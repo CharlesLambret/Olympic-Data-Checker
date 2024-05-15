@@ -24,7 +24,6 @@ export async function searchCountriesByName(countriesName: string ) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
     const countries = db.collection("countries");
-    console.log('un élément du tableau countries :', await countries.findOne())
     try {
         console.log(`Searching for countries with name: ${countriesName}`);  
         const countriesList = await countries.find({ region: { $regex: new RegExp(countriesName, 'i') }}).toArray();
