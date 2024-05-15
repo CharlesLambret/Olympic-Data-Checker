@@ -1,11 +1,18 @@
-import express from 'express';
-import indexuser from './CRUD/users/classicuser';
-import indexadmin from './CRUD/users/admin/indexusers';
-import session from 'express-session';
-import indexolympics from './CRUD/olympics/indexolympics';
+import express from "express";
+import indexuser from "./CRUD/users/classicuser";
+import indexadmin from "./CRUD/users/admin/indexusers";
+import session from "express-session";
+import indexolympics from "./CRUD/olympics/indexolympics";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 // app.use(session({
 //   secret: '8xxR1ZXfXUMKYqcsdhCU',
@@ -15,13 +22,8 @@ app.use(express.json());
 //   cookie: { secure: 'auto', httpOnly: true }
 // }));
 
-app.use(
-  indexuser, 
-  indexadmin, 
-  indexolympics
-);
-
+app.use(indexuser, indexadmin, indexolympics);
 
 app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+  console.log("Server is running on port 3000");
 });

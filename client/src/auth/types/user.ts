@@ -3,3 +3,7 @@ export type UserType = {
   email: string;
   isAdmin: boolean;
 };
+
+export type SignupApiRes = {
+  message: string;
+};
