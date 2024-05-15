@@ -4,6 +4,7 @@ import SignupPage from "../auth/pages/SignupPage";
 import Stats from "@/stats/pages/Stats";
 import AdminLayout from "@/admin/Layout";
 import AuthWrapper from "@/auth/AuthWrapper";
+import SingleAthlete from "@/athletes/pages/SingleAthlete";
 
 function Layout() {
   return (
@@ -17,7 +18,22 @@ function Layout() {
             <h1 className="text-3xl font-bold underline">Hello world!</h1>
           }
         />
-        <Route path="/stats" element={<AuthWrapper needAuth={false}><Stats /></AuthWrapper>} />
+        <Route
+          path="/stats"
+          element={
+            <AuthWrapper needAuth={false}>
+              <Stats />
+            </AuthWrapper>
+          }
+        />
+        <Route
+          path="/athletes/:id"
+          element={
+            <AuthWrapper needAuth>
+              <SingleAthlete />
+            </AuthWrapper>
+          }
+        />
         <Route
           path="/medals"
           element={

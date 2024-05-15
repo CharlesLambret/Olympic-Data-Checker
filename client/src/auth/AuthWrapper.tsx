@@ -16,7 +16,6 @@ type Props = {
 };
 
 const AuthWrapper = ({ needAuth, needAdmin, children }: Props) => {
-  console.log("AuthWrapper");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.data);
