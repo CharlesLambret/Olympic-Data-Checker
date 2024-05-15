@@ -1,7 +1,7 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store/store";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/Icons";
 import {
@@ -16,6 +16,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/Avatar";
 import { buttonVariants } from "@/components/Button";
 import logo from "@/static/logo.svg";
+import { clearUser } from "../redux/slices/userSlice";
+import { removeAuthorization } from "@/auth/utils/authorizations";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -56,13 +58,21 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export default function NavBar() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.data);
+
+  const logout = () => {
+    dispatch(clearUser());
+    removeAuthorization();
+    navigate("/login");
+  };
 
   return (
     <div className="flex flex-row justify-between items-center border border-slate-300 rounded-md p-3 my-5 w-full">
-      <div className="h-10 w-1/4">
+      <Link to={"/"} className="h-10 w-1/4">
         <img className="h-full w-35" src={logo} alt="" />
-      </div>
+      </Link>
       <div className="flex w-2/4 justify-center">
         <NavigationMenu>
           <NavigationMenuList>
@@ -139,11 +149,23 @@ export default function NavBar() {
 
       {user.id ? (
         <div className="flex w-1/4 justify-end items-center">
-          <p className="text-slate-500 mr-4">{user.email}</p>
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>
+                  <p className="text-slate-500 mr-4">{user.email}</p>
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <button
+                    onClick={logout}
+                    className={buttonVariants({ variant: "outline" })}
+                  >
+                    Se déconnecter
+                  </button>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
       ) : (
         <div className="flex w-1/4 justify-end">
