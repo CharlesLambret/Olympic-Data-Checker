@@ -8,8 +8,6 @@ import { index2024 } from './API/index2024';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 
-import { createServer } from 'http';
-import { Server, WebSocket } from 'ws';
 
 // ---------------- Init serveur ---------------- //
 const app = express();
