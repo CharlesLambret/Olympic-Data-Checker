@@ -1,70 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/Input";
 import AthleteCard from "../components/AthleteCard";
-
-const athletes = [
-  {
-    _id: { $oid: "6629506adb8a12c62faac332" },
-    Nom: "Arvo Ossian Aaltonen",
-    Discipline: "Swimming",
-    Age: 30,
-    Poids: null,
-    Taille: null,
-    Sexe: "M",
-    PaysID: {
-      $oid: "6627f371b59255f0bab8816c",
-      noc: "ALG",
-      region: "Algeria",
-      notes: "test",
-    },
-  },
-  {
-    _id: { $oid: "6629506adb8a12c62faac332" },
-    Nom: "Arvo Ossian Aaltonen",
-    Discipline: "Swimming",
-    Age: 30,
-    Poids: null,
-    Taille: null,
-    Sexe: "F",
-    PaysID: {
-      $oid: "6627f371b59255f0bab8816c",
-      noc: "ALG",
-      region: "Algeria",
-      notes: "test",
-    },
-  },
-  {
-    _id: { $oid: "6629506adb8a12c62faac332" },
-    Nom: "Arvo Ossian Aaltonen",
-    Discipline: "Swimming",
-    Age: 30,
-    Poids: null,
-    Taille: null,
-    Sexe: "F",
-    PaysID: {
-      $oid: "6627f371b59255f0bab8816c",
-      noc: "ALG",
-      region: "Algeria",
-      notes: "test",
-    },
-  },
-];
+import { get } from "@/lib/api";
+import { Athlete } from "../types/athlete";
+import useDebounce from "@/app/hooks/useDebounce";
 
 const AllAthletes: React.FC = () => {
+  const [athletes, setAthletes] = useState<Athlete[] | null>(null);
+  const [search, setSearch] = useState("");
+
+  const debouncedSearch = useDebounce(search, 500);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await get<Athlete[]>(
+          "/getathletes?name=" + debouncedSearch
+        );
+        // Only the first 100
+        response.length = 100;
+        setAthletes(response);
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, [debouncedSearch]);
+
   return (
     <div className="mx-5">
-      <Input className="mb-4 w-80" type="text" placeholder="Rechercher..." />
+      <Input
+        className="mb-4 w-80"
+        type="text"
+        placeholder="Rechercher..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {athletes.map((athlete) => (
-          <Link
-            to={`/athletes/${athlete._id.$oid}`}
-            key={athlete._id.$oid}
-            className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-slate-300"
-          >
-            <AthleteCard athlete={athlete} />
-          </Link>
-        ))}
+        {athletes === null ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            {athletes.map((athlete) => (
+              <Link
+                to={`/athletes/${athlete._id}`}
+                key={athlete._id}
+                className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-slate-300"
+              >
+                <AthleteCard athlete={athlete} />
+              </Link>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

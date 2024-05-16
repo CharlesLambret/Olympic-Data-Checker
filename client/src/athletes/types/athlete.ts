@@ -1,7 +1,5 @@
 export type Athlete = {
-  _id: {
-    $oid: string;
-  };
+  _id: string;
   Nom: string;
   Discipline: string;
   Age: number;

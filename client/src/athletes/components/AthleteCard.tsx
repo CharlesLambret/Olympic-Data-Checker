@@ -20,7 +20,9 @@ const AthleteCard = ({ athlete }: { athlete: Athlete }) => {
         <div className="flex gap-2 mt-4">
           <Badge className="bg-black w-fit">{athlete.Discipline}</Badge>
           <Badge className="bg-black w-fit">{athlete.PaysID.region}</Badge>
-          <Badge className="bg-black w-fit">{athlete.Age} years</Badge>
+          <Badge className="bg-black w-fit">
+            Médaillé{athlete.Sexe === "M" ? "" : "e"} à {athlete.Age} ans
+          </Badge>
           {athlete.Poids && (
             <Badge className="bg-black w-fit">{athlete.Poids} kg</Badge>
           )}
