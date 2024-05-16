@@ -14,6 +14,8 @@ getAthlete.get('/getathlete/:id', async (req, res) => {
     }
    
 });
+
+
 getAthlete.get('/getathletes', async (req, res) => {
     try {
 
