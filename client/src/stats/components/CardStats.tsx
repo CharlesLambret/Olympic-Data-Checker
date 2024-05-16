@@ -1,13 +1,22 @@
 import {
   Bar,
   BarChart,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Card";
+import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
+import { Label } from "@/components/Label";
+import { DatePickerWithRange } from "@/components/DatePicker";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/Selector"
 
 const data = [
   {
@@ -47,59 +56,57 @@ const data = [
 export function CardsStats() {
   return (
     <div
-      className="grid grid-cols-2"
+      className="flex flex-row gap-3"
       style={{
         height: "calc(100vh - 126px)",
       }}
     >
-      <Card className="col-span-1">
+      <Card className="flex flex-col basis-1/4 h-full">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base font-normal">Total Revenue</CardTitle>
+          <CardTitle> 
+              <h2 className="text-2xl font-bold">Filter</h2> 
+              <p className="text-xs text-muted-foreground">Chose one or multiple filter</p>
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">$15,231.89</div>
-          <p className="text-xs text-muted-foreground">
-            +20.1% from last month
-          </p>
-          <div className="h-[80px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={data}
-                margin={{
-                  top: 5,
-                  right: 10,
-                  left: 10,
-                  bottom: 0,
-                }}
-              >
-                <Line
-                  type="monotone"
-                  strokeWidth={2}
-                  dataKey="revenue"
-                  activeDot={{
-                    r: 6,
-                    style: { fill: "hsl(var(--primary))", opacity: 0.25 },
-                  }}
-                  style={
-                    {
-                      stroke: "hsl(var(--primary))",
-                    } as React.CSSProperties
-                  }
-                />
-              </LineChart>
-            </ResponsiveContainer>
+        <CardContent className="flex flex-col justify-between h-full">
+          <div className="flex flex-col gap-4">
+            <div>
+              <Label htmlFor="email">Country Name</Label>
+              <Input type="country" id="country" placeholder="Country" />
+            </div>
+            <div >
+              <Label htmlFor="email">Pick a period</Label>
+              <DatePickerWithRange/>
+            </div>
+            <div>
+              <Label htmlFor="email">Pick a medals</Label>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Medals" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light">Gold</SelectItem>
+                  <SelectItem value="dark">Silver</SelectItem>
+                  <SelectItem value="system">Bronze</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div>
+            <Button className="w-full">Filtrer</Button>
           </div>
         </CardContent>
       </Card>
-      <Card className="h-auto col-span-6">
+
+      
+      <Card className="h-auto col-span-6 basis-3/4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base font-normal">Subscriptions</CardTitle>
+          <CardTitle> 
+              <h2 className="text-2xl font-bold">Medals</h2> 
+              <p className="text-xs text-muted-foreground"> Top 8 country by medals</p>
+          </CardTitle>
         </CardHeader>
         <CardContent className="">
-          <div className="text-2xl font-bold">+2350</div>
-          <p className="text-xs text-muted-foreground">
-            +180.1% from last month
-          </p>
           <div
             className="mt-4"
             style={{
@@ -124,32 +131,6 @@ export function CardsStats() {
           </div>
         </CardContent>
       </Card>
-      {/* <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base font-normal">Subscriptions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">+2350</div>
-          <p className="text-xs text-muted-foreground">
-            +180.1% from last month
-          </p>
-          <div className="mt-4 h-[80px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
-                <Bar
-                  dataKey="subscription"
-                  style={
-                    {
-                      fill: "hsl(var(--primary))",
-                      opacity: 1,
-                    } as React.CSSProperties
-                  }
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card> */}
     </div>
   );
 }
