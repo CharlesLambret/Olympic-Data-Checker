@@ -1,6 +1,6 @@
 # Olympic Data Checker
 
-## À propos de l'application
+## Description
 
 Olympic Data Checker est une application innovante conçue pour fournir un accès rapide et facile aux données historiques des Jeux Olympiques. Avec une interface utilisateur intuitive, cette application permet aux utilisateurs de rechercher des informations sur les athlètes olympiques, leurs médailles et les records des jeux précédents.
 
