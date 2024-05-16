@@ -1,5 +1,9 @@
 # Utiliser le back-end / faire des calls API 
 
+# Postman
+
+une collection postman des endpoint est accessible au travers de l'onglet wiki du github wiki/postman 
+
 ## Auth
 
 ### Créer un nouvel utilisateur / s'inscrire
