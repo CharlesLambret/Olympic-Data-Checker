@@ -1,81 +1,96 @@
 import express, { Request, Response } from 'express';
-import { MongoConnection } from '../../db/call';
+import { MongoConnection } from '../db/call';
 import { ObjectId } from 'mongodb';
 import { createReadStream } from 'fs';
 import { parse } from 'csv-parse';
 
-const creerathlete = express.Router();
+const creerathletes = express.Router();
 
-type Athlete = {
-    _id: ObjectId;
-    Nom: string;
-    Discipline: string;
-    Age: number | null;
-    Poids: number | null;
-    Taille: number | null;
-    Sexe: string;
-    PaysID: ObjectId;
-};
-
-creerathlete.post('/upload-athletes', async (req: Request, res: Response) => {
+creerathletes.post('/upload-athletes', async (req: Request, res: Response) => {
     const client = await MongoConnection();
     const db = client.db("TP-React");
-    const athletes = db.collection<Athlete>("athletes");
-    const countries = db.collection("countries");
-
-    await athletes.createIndex({ Nom: 1, Discipline: 1, PaysID: 1 }, { unique: true });
+    const athletesCollection = db.collection("athletes");
+    const countriesCollection = db.collection("countries");
+    const sportsCollection = db.collection("sports");
 
     const countryMap = new Map<string, ObjectId>();
-    const allCountries = await countries.find({}).toArray();
-    allCountries.forEach(country => {
-        countryMap.set(country.region, country._id);
-    });
+    const sportMap = new Map<string, ObjectId>();
 
-    const parser = createReadStream('./athlete_events.csv').pipe(parse({
+    try {
+        // Chargement des pays et création d'une map
+        const allCountries = await countriesCollection.find({}).toArray();
+        allCountries.forEach(country => {
+            if (country.noc) {
+                countryMap.set(country.noc.trim().toUpperCase(), country._id);
+            } else {
+                console.warn(`Country document missing NOC: ${JSON.stringify(country)}`);
+            }
+        });
+
+        // Chargement des sports et création d'une map
+        const allSports = await sportsCollection.find({}).toArray();
+        allSports.forEach(sport => {
+            if (sport.NomSport) {
+                sportMap.set(sport.NomSport.trim(), sport._id);
+            } else {
+                console.warn(`Sport document missing NomSport: ${JSON.stringify(sport)}`);
+            }
+        });
+    } catch (error) {
+        console.error("Error loading countries or sports:", error);
+        res.status(500).send("Failed to load necessary collections.");
+        return;
+    }
+
+    const athletes: { 
+        Nom: string, 
+        PaysID: ObjectId, 
+        SportID: ObjectId, 
+        Age?: number, 
+        Taille?: number, 
+        Poids?: number, 
+        Sexe: string, 
+        _id: ObjectId 
+    }[] = [];
+
+    const parser = createReadStream('./cleanathletes.csv').pipe(parse({
         columns: true,
         skip_empty_lines: true
     }));
 
-    const athletesData: Athlete[] = [];
-    const BATCH_SIZE = 1000; // Taille du lot d'insertion
-    let batch: { _id: ObjectId; Nom: any; Discipline: any; Age: number | null; Poids: number | null; Taille: number | null; Sexe: any; PaysID: ObjectId; }[] = [];
-    
     parser.on('readable', () => {
         let record;
-        while ((record = parser.read())) {
-            if (record.Medal !== 'NA') { // Filtre les entrées sans médaille
-                const countryId = countryMap.get(record.Team.trim());
-                if (countryId) {
-                    batch.push({
-                        _id: new ObjectId(),
-                        Nom: record.Name.trim(),
-                        Discipline: record.Sport.trim(),
-                        Age: record.Age === 'NA' ? null : parseInt(record.Age),
-                        Poids: record.Weight === 'NA' ? null : parseInt(record.Weight),
-                        Taille: record.Height === 'NA' ? null : parseInt(record.Height),
-                        Sexe: record.Sex.trim(),
-                        PaysID: countryId
-                    });
-                }
-    
-                if (batch.length >= BATCH_SIZE) {
-                    athletes.insertMany(batch, { ordered: false })
-                        .then(result => console.log(`Inserted ${result.insertedCount} athletes`))
-                        .catch(error => console.error('Batch insert error:', error));
-                    batch = []; // Réinitialiser le lot après l'insertion
-                }
+        while ((record = parser.read()) !== null) {
+            const countryID = countryMap.get(record.NOC ? record.NOC.trim().toUpperCase() : '');
+            const sportID = sportMap.get(record.Sport ? record.Sport.trim() : '');
+
+            if (countryID && sportID) {
+                const athlete = {
+                    Nom: record.Name ? record.Name.trim() : '',
+                    PaysID: countryID,
+                    SportID: sportID,
+                    Age: record.Age ? parseFloat(record.Age) : undefined,
+                    Taille: record.Height ? parseFloat(record.Height) : undefined,
+                    Poids: record.Weight ? parseFloat(record.Weight) : undefined,
+                    Sexe: record.Sex ? record.Sex.trim() : '',
+                    _id: new ObjectId()
+                };
+                athletes.push(athlete);
+            } else {
+                console.error(`Missing country or sport mapping for record: ${JSON.stringify(record)}`);
             }
         }
     });
-    
+
     parser.on('end', async () => {
-        if (batch.length > 0) { // Insérer le dernier lot si nécessaire
-            athletes.insertMany(batch, { ordered: false })
-                .then(result => console.log(`Inserted ${result.insertedCount} athletes`))
-                .catch(error => console.error('Final batch insert error:', error));
+        try {
+            const result = await athletesCollection.insertMany(athletes, { ordered: false });
+            console.log(`Inserted ${result.insertedCount} athletes`);
+            res.status(201).send(`Inserted ${result.insertedCount} athletes`);
+        } catch (err) {
+            console.error('Batch insert error:', err);
+            res.status(500).send("Failed to insert athletes.");
         }
-        console.log("Finished processing CSV data.");
-        res.status(201).send("Athlete data upload completed successfully.");
     });
 
     parser.on('error', error => {
@@ -84,4 +99,4 @@ creerathlete.post('/upload-athletes', async (req: Request, res: Response) => {
     });
 });
 
-export default creerathlete;
+export default creerathletes;

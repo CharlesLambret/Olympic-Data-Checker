@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import { MongoConnection } from '../../db/call';
-import { Document, ObjectId, OptionalId } from 'mongodb';
+import { MongoConnection } from '../db/call';
+import { ObjectId } from 'mongodb';
 import { createReadStream } from 'fs';
 import { parse } from 'csv-parse';
 
@@ -9,42 +9,62 @@ const creermedailles = express.Router();
 creermedailles.post('/upload-medailles', async (req: Request, res: Response) => {
     const client = await MongoConnection();
     const db = client.db("TP-React");
-    const medailles = db.collection("medailles");
-    const athletes = db.collection("athletes");
-    const events = db.collection("evenements");
-    const games = db.collection("jeux");
+    const medaillesCollection = db.collection("medailles");
+    const athletesCollection = db.collection("athletes");
+    const countriesCollection = db.collection("countries");
+    const jeuxCollection = db.collection("jeux");
+    const evenementsCollection = db.collection("evenements");
 
     const athleteMap = new Map<string, ObjectId>();
+    const countryMap = new Map<string, ObjectId>();
+    const jeuxMap = new Map<string, ObjectId>();
     const eventMap = new Map<string, ObjectId>();
-    const gameMap = new Map<string, ObjectId>();
 
     try {
-        const allAthletes = await athletes.find({}).toArray();
+        // Chargement des athlètes et création d'une map
+        const allAthletes = await athletesCollection.find({}).toArray();
         allAthletes.forEach(athlete => {
-            athleteMap.set(athlete.Nom.trim(), athlete._id);
+            athleteMap.set(athlete.Nom.trim().toLowerCase(), athlete._id);
         });
 
-        const allGames = await games.find({}).toArray();
-        allGames.forEach(game => {
-            const gameKey = `${game.Ville.trim()}-${game.Annee}`;
-            gameMap.set(gameKey, game._id);
+        // Chargement des pays et création d'une map
+        const allCountries = await countriesCollection.find({}).toArray();
+        allCountries.forEach(country => {
+            if (country.noc) {
+                countryMap.set(country.noc.trim().toUpperCase(), country._id);
+            } else {
+                console.warn(`Country document missing NOC: ${JSON.stringify(country)}`);
+            }
         });
 
-        const allEvents = await events.find({}).toArray();
+        // Chargement des jeux et création d'une map
+        const allJeux = await jeuxCollection.find({}).toArray();
+        allJeux.forEach(jeu => {
+            const key = `${jeu.Annee}-${jeu.Ville.trim().toLowerCase()}`;
+            jeuxMap.set(key, jeu._id);
+        });
+
+        // Chargement des événements et création d'une map
+        const allEvents = await evenementsCollection.find({}).toArray();
         allEvents.forEach(event => {
-            const eventKey = `${event.NomEvent.trim()}-${event.JeuxID}`;
-            eventMap.set(eventKey, event._id);
+            const key = `${event.NomEvent.trim().toLowerCase()}-${event.JeuxID}`;
+            eventMap.set(key, event._id);
         });
     } catch (error) {
-        console.error("Error loading athletes, games or events:", error);
+        console.error("Error loading athletes, countries, games or events:", error);
         res.status(500).send("Failed to load necessary collections.");
         return;
     }
 
-    const BATCH_SIZE = 500;
-    let batch: OptionalId<Document>[] | { NomMedaille: any; EventID: ObjectId; AthleteID: ObjectId; }[] = [];
+    const medailles: { 
+        NomMedaille: string, 
+        AthleteID: ObjectId, 
+        PaysID: ObjectId, 
+        EventID: ObjectId, 
+        _id: ObjectId 
+    }[] = [];
 
-    const parser = createReadStream('./athlete_events.csv').pipe(parse({
+    const parser = createReadStream('./medals.csv').pipe(parse({
         columns: true,
         skip_empty_lines: true
     }));
@@ -52,41 +72,49 @@ creermedailles.post('/upload-medailles', async (req: Request, res: Response) => 
     parser.on('readable', () => {
         let record;
         while ((record = parser.read()) !== null) {
-            if (record.Medal !== 'NA') { // Only process entries where Medal is not 'NA'
-                const athleteID = athleteMap.get(record.Name.trim());
-                const gameKey = `${record.City.trim()}-${record.Year}`;
-                const gameID = gameMap.get(gameKey);
-                const eventKey = `${record.Event.trim()}-${gameID}`;
-                const eventID = eventMap.get(eventKey);
+            const athleteID = athleteMap.get(record.Name ? record.Name.trim().toLowerCase() : '');
+            const countryID = countryMap.get(record.NOC ? record.NOC.trim().toUpperCase() : '');
+            const jeuxKey = `${record.Year}-${record.City.trim().toLowerCase()}`;
+            const jeuxID = jeuxMap.get(jeuxKey);
+            const eventKey = `${record.Event.trim().toLowerCase()}-${jeuxID}`;
+            const eventID = eventMap.get(eventKey);
 
-                if (athleteID && eventID) {
-                    batch.push({
-                        NomMedaille: record.Medal.trim(),
-                        EventID: eventID,
-                        AthleteID: athleteID
-                    });
-
-                    if (batch.length >= BATCH_SIZE) {
-                        medailles.insertMany(batch, { ordered: false })
-                            .then(result => console.log(`Inserted ${result.insertedCount} medals`))
-                            .catch(err => console.error('Batch insert error:', err));
-                        batch = []; // Clear batch after insertion
-                    }
-                } else {
-                    console.error(`Missing athlete or event mapping for record: ${JSON.stringify(record)}`);
+            if (athleteID && countryID && jeuxID && eventID) {
+                const medaille = {
+                    NomMedaille: record.Medal ? record.Medal.trim() : '',
+                    AthleteID: athleteID,
+                    PaysID: countryID,
+                    EventID: eventID,
+                    _id: new ObjectId()
+                };
+                medailles.push(medaille);
+            } else {
+                console.error(`Missing mapping for record: ${JSON.stringify(record)}`);
+                if (!athleteID) {
+                    console.error(`Missing athlete ID for Name: ${record.Name}`);
+                }
+                if (!countryID) {
+                    console.error(`Missing country ID for NOC: ${record.NOC}`);
+                }
+                if (!jeuxID) {
+                    console.error(`Missing game ID for Year: ${record.Year}, City: ${record.City}`);
+                }
+                if (!eventID) {
+                    console.error(`Missing event ID for Event: ${record.Event}, JeuxID: ${jeuxID}`);
                 }
             }
         }
     });
 
     parser.on('end', async () => {
-        if (batch.length > 0) { // Insert remaining medals in the final batch
-            medailles.insertMany(batch, { ordered: false })
-                .then(result => console.log(`Inserted ${result.insertedCount} medals`))
-                .catch(err => console.error('Final batch insert error:', err));
+        try {
+            const result = await medaillesCollection.insertMany(medailles, { ordered: false });
+            console.log(`Inserted ${result.insertedCount} medailles`);
+            res.status(201).send(`Inserted ${result.insertedCount} medailles`);
+        } catch (err) {
+            console.error('Batch insert error:', err);
+            res.status(500).send("Failed to insert medailles.");
         }
-        console.log(`Finished processing CSV data. Total medals processed: ${batch.length}`);
-        res.status(201).send(`Processing complete. Total medals processed: ${batch.length}`);
     });
 
     parser.on('error', error => {
