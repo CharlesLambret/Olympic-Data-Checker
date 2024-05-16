@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "../auth/pages/LoginPage";
 import SignupPage from "../auth/pages/SignupPage";
 import Stats from "@/stats/pages/Stats";
@@ -24,14 +24,6 @@ function Layout() {
             }
           />
           <Route
-            path="/stats"
-            element={
-              <AuthWrapper needAuth={false}>
-                <Stats />
-              </AuthWrapper>
-            }
-          />
-          <Route
             path="/athletes"
             element={
               <AuthWrapper needAuth>
@@ -51,7 +43,7 @@ function Layout() {
             path="/medals"
             element={
               <AuthWrapper needAuth>
-                <h1>medals</h1>
+                <Stats />
               </AuthWrapper>
             }
           />

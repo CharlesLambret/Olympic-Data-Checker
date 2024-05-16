@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "@/app/components/NavBar";
+
 import man from "@/static/man.png";
 import woman from "@/static/woman.png";
 import { Badge } from "@/components/Badge";

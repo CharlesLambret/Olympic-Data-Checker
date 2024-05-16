@@ -1,50 +1,58 @@
-import { Bar, BarChart, Line, LineChart, ResponsiveContainer } from "recharts"
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/Card"
+  Bar,
+  BarChart,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+} from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/Card";
 
 const data = [
   {
-    revenue: 10400,
-    subscription: 240,
+    country: "USA",
+    medals: 100,
   },
   {
-    revenue: 14405,
-    subscription: 300,
+    country: "China",
+    medals: 80,
   },
   {
-    revenue: 9400,
-    subscription: 200,
+    country: "Russia",
+    medals: 70,
   },
   {
-    revenue: 8200,
-    subscription: 278,
+    country: "UK",
+    medals: 50,
   },
   {
-    revenue: 7000,
-    subscription: 189,
+    country: "France",
+    medals: 40,
   },
   {
-    revenue: 9600,
-    subscription: 239,
+    country: "Germany",
+    medals: 30,
   },
   {
-    revenue: 11244,
-    subscription: 278,
+    country: "Italy",
+    medals: 20,
   },
   {
-    revenue: 26475,
-    subscription: 189,
+    country: "Spain",
+    medals: 10,
   },
-]
+];
 
 export function CardsStats() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      <Card>
+    <div
+      className="grid grid-cols-2"
+      style={{
+        height: "calc(100vh - 126px)",
+      }}
+    >
+      <Card className="col-span-1">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base font-normal">Total Revenue</CardTitle>
         </CardHeader>
@@ -83,7 +91,40 @@ export function CardsStats() {
           </div>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="h-auto col-span-6">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-base font-normal">Subscriptions</CardTitle>
+        </CardHeader>
+        <CardContent className="">
+          <div className="text-2xl font-bold">+2350</div>
+          <p className="text-xs text-muted-foreground">
+            +180.1% from last month
+          </p>
+          <div
+            className="mt-4"
+            style={{
+              height: "calc(100vh - 256px)",
+            }}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data}>
+                <Tooltip cursor={{ fill: "#f1f5f9" }} />
+                <XAxis dataKey="country" />
+                <Bar
+                  dataKey="medals"
+                  style={
+                    {
+                      fill: "hsl(var(--primary))",
+                      opacity: 1,
+                    } as React.CSSProperties
+                  }
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+      {/* <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base font-normal">Subscriptions</CardTitle>
         </CardHeader>
@@ -108,33 +149,7 @@ export function CardsStats() {
             </ResponsiveContainer>
           </div>
         </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base font-normal">Subscriptions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">+2350</div>
-          <p className="text-xs text-muted-foreground">
-            +180.1% from last month
-          </p>
-          <div className="mt-4 h-[80px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
-                <Bar
-                  dataKey="subscription"
-                  style={
-                    {
-                      fill: "hsl(var(--primary))",
-                      opacity: 1,
-                    } as React.CSSProperties
-                  }
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      </Card> */}
     </div>
-  )
+  );
 }

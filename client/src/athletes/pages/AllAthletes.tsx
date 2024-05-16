@@ -1,7 +1,4 @@
 import React from "react";
-import NavBar from "@/app/components/NavBar";
-
-import { Badge } from "@/components/Badge";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/Input";
 import AthleteCard from "../components/AthleteCard";
