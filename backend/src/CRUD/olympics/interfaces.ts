@@ -38,3 +38,8 @@ export interface Game {
     Saison : 'Summer' | 'Winter';
     Ville : string;
 }
+
+export interface Sport {
+    _id : ObjectId;
+    NomSport : string;
+}
