@@ -26,7 +26,6 @@ const athlete = {
 const SingleAthlete: React.FC = () => {
   return (
     <div className="mx-5">
-      <NavBar />
       <div className="flex justify-between">
         <div className="ml-10 mt-16">
           <div className="flex gap-2 mb-4">

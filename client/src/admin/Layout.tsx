@@ -6,7 +6,7 @@ const AdminLayout = () => {
   return (
     <AuthWrapper needAdmin needAuth>
       <Routes>
-        <Route path="/admin" element={<MedalsAdminPage />} />
+        <Route path="/medals" element={<MedalsAdminPage />} />
       </Routes>
     </AuthWrapper>
   );

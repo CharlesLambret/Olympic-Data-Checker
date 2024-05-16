@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import {
   getTokenFromCookie,
+  parseJwt,
   removeAuthorization,
 } from "./utils/authorizations";
 import { clearUser, setUser } from "@/app/redux/slices/userSlice";
-import { UserType } from "./types/user";
 
 type Props = {
   needAuth?: boolean;
@@ -20,19 +20,23 @@ const AuthWrapper = ({ needAuth, needAdmin, children }: Props) => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.data);
 
-  const getMe = async (): Promise<UserType> => {
-    return { id: 1, email: "test@example.com", isAdmin: false };
-  };
+  console.log(user);
 
   const checkAuth = async () => {
     if (!user || !user.id) {
+      console.log("no user");
       const token = getTokenFromCookie();
       if (!token && needAuth) {
         navigate("/login");
       }
       if (token) {
         try {
-          const user = await getMe();
+          const jwt = parseJwt(token);
+          const user = {
+            id: jwt._id,
+            email: jwt.email,
+            isAdmin: true,
+          };
           dispatch(setUser(user));
         } catch (error) {
           removeAuthorization();
@@ -45,6 +49,9 @@ const AuthWrapper = ({ needAuth, needAdmin, children }: Props) => {
         if (needAdmin && !user.isAdmin) {
           navigate("/");
         }
+        console.log(user);
+        console.log(needAdmin);
+        console.log(user.isAdmin);
       }
     }
   };

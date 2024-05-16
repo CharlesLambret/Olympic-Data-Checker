@@ -1,13 +1,12 @@
 import Cookies from "js-cookie";
 
 export const setTokenCookie = (token: string) => {
-  const ONE_WEEK = 7 * 24 * 60 * 60;
+  const ONE_WEEK = 7;
 
-  const cookiesOptions = {
-    maxAge: ONE_WEEK,
+  Cookies.set("token", token, {
+    expires: ONE_WEEK,
     path: "/",
-  };
-  Cookies.set("token", token, cookiesOptions);
+  });
 };
 
 export const getTokenFromCookie = () => {
@@ -25,4 +24,12 @@ export const getAuthorizationTokenHeader = () => {
 
 export const removeAuthorization = () => {
   Cookies.remove("token");
+};
+
+export const parseJwt = (token: string) => {
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch (error) {
+    return null;
+  }
 };
