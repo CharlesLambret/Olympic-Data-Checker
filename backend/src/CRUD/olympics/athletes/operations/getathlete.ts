@@ -106,3 +106,45 @@ export async function searchAthletesByName(name: string) {
         await client.close();
     }
 }
+
+export async function getAllAthletesLight(){
+    const client = await MongoConnection();
+    const db = client.db("TP-React");
+    const athletesCollection = db.collection("athletes");
+    const countriesCollection = db.collection("countries");
+    const sportsCollection = db.collection("sports");
+
+    try {
+        const athletesList = await athletesCollection.find().toArray();
+        if (athletesList.length === 0) {
+            return "No athletes found.";
+        }
+
+        const detailedAthletes = await Promise.all(athletesList.map(async (athlete) => {
+            const [country, sport] = await Promise.all([
+                countriesCollection.findOne({ _id: athlete.PaysID }),
+                sportsCollection.findOne({ _id: athlete.SportID })
+            ]);
+
+            if (country) {
+                athlete.Pays = country.region;
+            }
+
+            if (sport) {
+                athlete.Sport = sport.NomSport;
+            }
+
+            delete athlete.PaysID;
+            delete athlete.SportID;
+
+            return athlete;
+        }));
+
+        return detailedAthletes;
+    } catch (error) {
+        console.error("Failed to search athletes by name:", error);
+        throw error;
+    } finally {
+        await client.close();
+    }
+}
