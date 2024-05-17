@@ -117,8 +117,8 @@ Remplacer ":id" par l'ID de l'utilisateur à supprimer.
 #### Search Athletes 
 - **URL**: /getathletes
 - **Method**: GET
-- **Description**: Searches athletes by name.
-- **Query Parameters**: name
+- **Description**: Searches athletes by name, add dynamically the page and pagesize the searches returns.
+- **Query Parameters**: name, page, pageSize
 - **Response**:
     - Status 200: Successfully retrieved.
     - Status 500: Failed to read athletes.
@@ -352,9 +352,9 @@ Status 500: Failed to create medal.
     - Status 500: Failed to read country.
 
 #### Search Pays
-- **URL**: /getcountries/:name
+- **URL**: /getcountries/
 - **Method**: GET
-- **Description**: Searches countries by name.
+- **Query Parameters**: name
 - **Response**:
     - Status 200: Successfully retrieved.
     - Status 500: Failed to read countries.

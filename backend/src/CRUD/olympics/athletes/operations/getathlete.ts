@@ -49,7 +49,7 @@ export async function getAthleteById(id: string | number) {
         }));
 
         athlete.totalMedailles = medailles.length;
-        athlete.medailles = detailedMedailles.filter(m => m !== null); // Supprimer les nulls
+        athlete.medailles = detailedMedailles.filter(m => m !== null); 
         athlete.Pays = country.region;
         athlete.Sport = sport.NomSport;
 
@@ -65,17 +65,43 @@ export async function getAthleteById(id: string | number) {
     }
 }
 
-export async function searchAthletesByName(name: any) {
+export async function searchAthletesByName(name: string, page: number, pageSize: number) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
-    const athletes = db.collection("athletes");
+    const athletesCollection = db.collection("athletes");
+    const countriesCollection = db.collection("countries");
+    const sportsCollection = db.collection("sports");
 
     try {
-        const athletesList = await athletes.find({ Nom: { $regex: name, $options: 'i' }}).toArray();
+        const athletesList = await athletesCollection.find({ Nom: { $regex: name, $options: 'i' } })
+            .skip(page > 0 ? ((page - 1) * pageSize) : 0)
+            .limit(pageSize)
+            .toArray();
         if (athletesList.length === 0) {
             return "No athletes found.";
         }
-        return athletesList;
+
+        const detailedAthletes = await Promise.all(athletesList.map(async (athlete) => {
+            const [country, sport] = await Promise.all([
+                countriesCollection.findOne({ _id: athlete.PaysID }),
+                sportsCollection.findOne({ _id: athlete.SportID })
+            ]);
+
+            if (country) {
+                athlete.Pays = country.region;
+            }
+
+            if (sport) {
+                athlete.Sport = sport.NomSport;
+            }
+
+            delete athlete.PaysID;
+            delete athlete.SportID;
+
+            return athlete;
+        }));
+
+        return detailedAthletes;
     } catch (error) {
         console.error("Failed to search athletes by name:", error);
         throw error;
@@ -83,3 +109,4 @@ export async function searchAthletesByName(name: any) {
         await client.close();
     }
 }
+
