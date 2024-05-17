@@ -352,9 +352,9 @@ Status 500: Failed to create medal.
     - Status 500: Failed to read country.
 
 #### Search Pays
-- **URL**: /getcountries/:name
+- **URL**: /getcountries/
 - **Method**: GET
-- **Description**: Searches countries by name.
+- **Query Parameters**: name
 - **Response**:
     - Status 200: Successfully retrieved.
     - Status 500: Failed to read countries.
