@@ -7,6 +7,6 @@ def extract_athletes(input_csv, output_csv):
     df_unique_athletes.to_csv(output_csv, index=False)
     print(f"Les informations des athlètes uniques ont été enregistrées sous le nom {output_csv}")
 
-input_csv = 'nona.csv'
+input_csv = '../nona.csv'
 output_csv = 'athletes.csv'
 extract_athletes(input_csv, output_csv)
