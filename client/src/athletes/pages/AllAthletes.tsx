@@ -15,9 +15,9 @@ const AllAthletes: React.FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await get<Athlete[]>(
-          "/getathletes?name=" + debouncedSearch
-        );
+        const query = "?name=" + debouncedSearch + "&page=1&pageSize=20";
+
+        const response = await get<Athlete[]>("/getathletes" + query);
         // Only the first 100
         response.length = 100;
         setAthletes(response);

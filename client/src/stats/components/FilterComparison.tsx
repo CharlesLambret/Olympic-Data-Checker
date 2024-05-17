@@ -3,12 +3,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs";
 import { useState } from "react";
 import AthleteSelect from "./AthleteSelect";
 import CountrySelect from "./CountrySelect";
+import { Medals } from "../types/stats";
 
 type Props = {
   setSelectedFilter: (selectedFilter: string | null) => void;
+  setMedals: (medals: Medals) => void;
 };
 
-const FilterComparison = ({ setSelectedFilter }: Props) => {
+const FilterComparison = ({ setSelectedFilter, setMedals }: Props) => {
   const [selectedAthlete, setSelectedAthlete] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
@@ -28,6 +30,7 @@ const FilterComparison = ({ setSelectedFilter }: Props) => {
             selectedAthlete={selectedAthlete}
             setSelectedAthlete={setSelectedAthlete}
             setSelectedFilter={setSelectedFilter}
+            setMedals={setMedals}
           />
         </TabsContent>
         <TabsContent value="country">
@@ -35,6 +38,7 @@ const FilterComparison = ({ setSelectedFilter }: Props) => {
             selectedCountry={selectedCountry}
             setSelectedCountry={setSelectedCountry}
             setSelectedFilter={setSelectedFilter}
+            setMedals={setMedals}
           />
         </TabsContent>
       </Tabs>

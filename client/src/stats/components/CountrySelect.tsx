@@ -1,18 +1,20 @@
 import { get } from "@/lib/api";
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import { Country } from "../types/stats";
+import { Country, CountryDetails, Medals } from "../types/stats";
 
 type Props = {
   selectedCountry: string | null;
   setSelectedCountry: (selectedCountry: string | null) => void;
   setSelectedFilter: (selectedFilter: string | null) => void;
+  setMedals: (medals: Medals) => void;
 };
 
 const CountrySelect = ({
   selectedCountry,
   setSelectedCountry,
   setSelectedFilter,
+  setMedals,
 }: Props) => {
   const [countries, setCountries] = useState<Country[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ const CountrySelect = ({
     (async () => {
       try {
         setLoading(true);
-        const response = await get<Country[]>("/getcountries/france");
+        const response = await get<Country[]>("/getcountries/");
         setCountries(response);
         setLoading(false);
       } catch (err) {
@@ -31,16 +33,24 @@ const CountrySelect = ({
     })();
   }, []);
 
+  const handleCountryChange = async (countryId: string) => {
+    const country = await get<CountryDetails>(`/getcountry/${countryId}`);
+    setMedals(country.medailles);
+  };
+
   return (
     <Select
       options={countries?.map((country) => ({
-        value: country.region,
+        value: country._id,
         label: country.region,
       }))}
       onChange={(selectedOption) => {
-        setSelectedCountry(selectedOption?.value || null);
-        setSelectedFilter(selectedOption?.value || null);
+        setSelectedCountry(selectedOption?.label || null);
+        setSelectedFilter(selectedOption?.label || null);
         setLoading(false);
+        if (selectedOption) {
+          handleCountryChange(selectedOption.value);
+        }
       }}
       isLoading={loading}
       value={

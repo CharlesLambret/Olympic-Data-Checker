@@ -1,47 +1,23 @@
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
+import { ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Card";
 import FilterComparison from "./FilterComparison";
 import MedalsPieChart from "./MedalsPieChart";
 import { useState } from "react";
-
-const data = [
-  {
-    country: "USA",
-    medals: 100,
-  },
-  {
-    country: "China",
-    medals: 80,
-  },
-  {
-    country: "Russia",
-    medals: 70,
-  },
-  {
-    country: "UK",
-    medals: 50,
-  },
-  {
-    country: "France",
-    medals: 40,
-  },
-  {
-    country: "Germany",
-    medals: 30,
-  },
-  {
-    country: "Italy",
-    medals: 20,
-  },
-  {
-    country: "Spain",
-    medals: 10,
-  },
-];
+import { Medals } from "../types/stats";
 
 export function ComparisonContent() {
   const [selectedLeft, setSelectedLeft] = useState<string | null>(null);
   const [selectedRight, setSelectedRight] = useState<string | null>(null);
+  const [medalsLeft, setMedalsLeft] = useState<Medals>({
+    gold: 0,
+    silver: 0,
+    bronze: 0,
+  });
+  const [medalsRight, setMedalsRight] = useState<Medals>({
+    gold: 0,
+    silver: 0,
+    bronze: 0,
+  });
 
   return (
     <div
@@ -60,7 +36,10 @@ export function ComparisonContent() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col justify-between h-full p-4">
-          <FilterComparison setSelectedFilter={setSelectedLeft} />
+          <FilterComparison
+            setSelectedFilter={setSelectedLeft}
+            setMedals={setMedalsLeft}
+          />
         </CardContent>
       </Card>
 
@@ -89,7 +68,12 @@ export function ComparisonContent() {
               className="flex flex-col items-center"
             >
               <>
-                <MedalsPieChart />
+                <MedalsPieChart
+                  medalsLeft={medalsLeft}
+                  nameLeft={selectedLeft || ""}
+                  medalsRight={medalsRight}
+                  nameRight={selectedRight || ""}
+                />
               </>
             </ResponsiveContainer>
           </div>
@@ -105,7 +89,10 @@ export function ComparisonContent() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col justify-between h-full p-4">
-          <FilterComparison setSelectedFilter={setSelectedRight} />
+          <FilterComparison
+            setSelectedFilter={setSelectedRight}
+            setMedals={setMedalsRight}
+          />
         </CardContent>
       </Card>
     </div>

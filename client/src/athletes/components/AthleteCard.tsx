@@ -16,10 +16,10 @@ const AthleteCard = ({ athlete }: { athlete: Athlete }) => {
         <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
           {athlete.Nom}
         </h1>
-        <p className="text-gray-600 dark:text-gray-300">{athlete.Discipline}</p>
+        <p className="text-gray-600 dark:text-gray-300">{athlete.Sport}</p>
         <div className="flex gap-2 mt-4">
-          <Badge className="bg-black w-fit">{athlete.Discipline}</Badge>
-          <Badge className="bg-black w-fit">{athlete.PaysID.region}</Badge>
+          <Badge className="bg-black w-fit">{athlete.Sport}</Badge>
+          <Badge className="bg-black w-fit">{athlete.Pays}</Badge>
           <Badge className="bg-black w-fit">
             Médaillé{athlete.Sexe === "M" ? "" : "e"} à {athlete.Age} ans
           </Badge>
