@@ -5,6 +5,7 @@ import session from 'express-session';
 import indexuser from './CRUD/users/classicuser';
 import indexadmin from './CRUD/users/admin/indexusers';
 import indexolympics from './CRUD/olympics/indexolympics';
+import indexstats from './Statistiques/indexstats';
 
 import { createServer } from 'http';
 import { Server, WebSocket } from 'ws';
@@ -49,7 +50,8 @@ server.listen(3000, () => {
 app.use(
   indexuser, 
   indexadmin, 
-  indexolympics
+  indexolympics,
+  indexstats
 );
 
 

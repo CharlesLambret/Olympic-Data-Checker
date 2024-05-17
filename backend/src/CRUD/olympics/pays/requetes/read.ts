@@ -1,12 +1,11 @@
 import express from "express";
 import { getCountryById, searchCountriesByName } from "../operations/readcountry";
-import { ObjectId } from "mongodb";
 
 export const getCountry = express.Router();
 
-getCountry.get('/getcountries/:name', async (req, res) => {
+getCountry.get('/getcountries/', async (req, res) => {
     try {
-        const name = req.body.name as string;
+        const name = req.query.name as string;
         const medals = await searchCountriesByName(name); 
         res.send(medals);
     } catch (error: any) {
