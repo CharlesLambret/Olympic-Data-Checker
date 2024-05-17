@@ -56,6 +56,19 @@ export async function TotalMedailles(type: string, id: string) {
         ]).toArray();
         return result[0]?.totalMedals || 0;
     }
+    else if (validType === 'jeux') {
+        const jeuxId = new ObjectId(id);
+        const result = await medailles.aggregate([
+            { $match: { JeuxID: jeuxId } },
+            {
+                $group: {
+                    _id: '$JeuxID',
+                    totalMedals: { $sum: 1 }
+                }
+            }
+        ]).toArray();
+        return result[0]?.totalMedals || 0;
+    }
 }
 
 export async function TotalMedaillesByType(type: string, id: string) {
@@ -130,6 +143,32 @@ export async function TotalMedaillesByType(type: string, id: string) {
             }
         ]).toArray();
         
+        return result[0] || { gold: 0, silver: 0, bronze: 0 };
+    } else if (validType === 'jeux') {
+        const jeuxId = new ObjectId(id);
+        const result = await medailles.aggregate([
+            { $match: { JeuxID: jeuxId } },
+            {
+                $group: {
+                    _id: '$JeuxID',
+                    gold: {
+                        $sum: {
+                            $cond: [{ $eq: ["$NomMedaille", "Gold"] }, 1, 0]
+                        }
+                    },
+                    silver: {
+                        $sum: {
+                            $cond: [{ $eq: ["$NomMedaille", "Silver"] }, 1, 0]
+                        }
+                    },
+                    bronze: {
+                        $sum: {
+                            $cond: [{ $eq: ["$NomMedaille", "Bronze"] }, 1, 0]
+                        }
+                    }
+                }
+            }
+        ]).toArray();
         return result[0] || { gold: 0, silver: 0, bronze: 0 };
     }
 }
