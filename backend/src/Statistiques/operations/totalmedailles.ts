@@ -99,35 +99,37 @@ export async function TotalMedaillesByType(type: string, id: string) {
         const countryId = new ObjectId(id);
         const result = await medailles.aggregate([
             {
-                $lookup: {
-                    from: 'athletes',
-                    localField: 'AthleteID',
-                    foreignField: '_id',
-                    as: 'athlete'
-                }
+            $lookup: {
+                from: 'athletes',
+                localField: 'AthleteID',
+                foreignField: '_id',
+                as: 'athlete'
+            }
             },
             { $unwind: '$athlete' },
             { $match: { 'athlete.PaysID': countryId } },
             {
-                $group: {
-                    gold: {
-                        $sum: {
-                            $cond: [{ $eq: ["$NomMedaille", "Gold"] }, 1, 0]
-                        }
-                    },
-                    silver: {
-                        $sum: {
-                            $cond: [{ $eq: ["$NomMedaille", "Silver"] }, 1, 0]
-                        }
-                    },
-                    bronze: {
-                        $sum: {
-                            $cond: [{ $eq: ["$NomMedaille", "Bronze"] }, 1, 0]
-                        }
-                    }
+            $group: {
+                _id: '$athlete.PaysID',
+                gold: {
+                $sum: {
+                    $cond: [{ $eq: ["$NomMedaille", "Gold"] }, 1, 0]
+                }
+                },
+                silver: {
+                $sum: {
+                    $cond: [{ $eq: ["$NomMedaille", "Silver"] }, 1, 0]
+                }
+                },
+                bronze: {
+                $sum: {
+                    $cond: [{ $eq: ["$NomMedaille", "Bronze"] }, 1, 0]
+                }
                 }
             }
+            }
         ]).toArray();
+        
         return result[0] || { gold: 0, silver: 0, bronze: 0 };
     }
 }
