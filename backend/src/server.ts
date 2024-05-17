@@ -1,11 +1,6 @@
 import express from "express";
-import indexuser from "./CRUD/users/classicuser";
-import indexadmin from "./CRUD/users/admin/indexusers";
 import session from "express-session";
-import indexolympics from "./CRUD/olympics/indexolympics";
 import cors from "cors";
-
-<<<<<<< HEAD
 
 import indexuser from './CRUD/users/classicuser';
 import indexadmin from './CRUD/users/admin/indexusers';
@@ -14,10 +9,6 @@ import indexstats from './Statistiques/indexstats';
 
 import { createServer } from 'http';
 import { Server, WebSocket } from 'ws';
-=======
-import { createServer } from "http";
-import { Server, WebSocket } from "ws";
->>>>>>> e89c7bd17b4ed3513a1044f930bfda1292a7f03c
 
 const app = express();
 app.use(express.json());
@@ -62,7 +53,6 @@ server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-<<<<<<< HEAD
 app.use(
   indexuser, 
   indexadmin, 
@@ -71,6 +61,3 @@ app.use(
 );
 
 
-=======
-app.use(indexuser, indexadmin, indexolympics);
->>>>>>> e89c7bd17b4ed3513a1044f930bfda1292a7f03c

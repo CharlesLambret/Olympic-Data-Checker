@@ -4,15 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const express_session_1 = __importDefault(require("express-session"));
+const cors_1 = __importDefault(require("cors"));
 const classicuser_1 = __importDefault(require("./CRUD/users/classicuser"));
 const indexusers_1 = __importDefault(require("./CRUD/users/admin/indexusers"));
-const express_session_1 = __importDefault(require("express-session"));
 const indexolympics_1 = __importDefault(require("./CRUD/olympics/indexolympics"));
-<<<<<<< HEAD
 const indexstats_1 = __importDefault(require("./Statistiques/indexstats"));
-=======
-const cors_1 = __importDefault(require("cors"));
->>>>>>> e89c7bd17b4ed3513a1044f930bfda1292a7f03c
 const http_1 = require("http");
 const ws_1 = require("ws");
 const app = (0, express_1.default)();
