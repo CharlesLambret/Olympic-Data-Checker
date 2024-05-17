@@ -59,6 +59,13 @@ export default function NavBar() {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link to="/comparison">
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Comparaison
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>

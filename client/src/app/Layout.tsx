@@ -8,6 +8,7 @@ import SingleAthlete from "@/athletes/pages/SingleAthlete";
 import OlympicEvents from "../api/testcallapi";
 import AllAthletes from "@/athletes/pages/AllAthletes";
 import NavBar from "./components/NavBar";
+import Comparison from "@/stats/pages/Comparison";
 
 function Layout() {
   return (
@@ -44,6 +45,14 @@ function Layout() {
             element={
               <AuthWrapper needAuth>
                 <Stats />
+              </AuthWrapper>
+            }
+          />
+          <Route
+            path="/comparison"
+            element={
+              <AuthWrapper needAuth>
+                <Comparison />
               </AuthWrapper>
             }
           />
