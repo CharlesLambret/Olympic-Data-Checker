@@ -18,15 +18,16 @@ getAthlete.get('/getathlete/:id', async (req, res) => {
 
 getAthlete.get('/getathletes', async (req, res) => {
     try {
-
-   const name = req.query.name;
-   const athletes = await searchAthletesByName(name);
-   res.send(athletes);
-    }
-    catch (error: any) {
+        const name = req.query.name;
+        if (typeof name === 'string') {
+            const athletes = await searchAthletesByName(name);
+            res.send(athletes);
+        } else {
+            res.status(400).send("Invalid query parameter: name");
+        }
+    } catch (error: any) {
         res.status(500).send("Failed to read athletes: " + error.message);
     }
-
 });
 
 export default getAthlete;
