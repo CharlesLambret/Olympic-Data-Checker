@@ -12,6 +12,7 @@ const indexolympics_1 = __importDefault(require("./CRUD/olympics/indexolympics")
 const indexstats_1 = require("./Statistiques/indexstats");
 const http_1 = require("http");
 const ws_1 = require("ws");
+
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({
@@ -40,5 +41,6 @@ wss.on("connection", (ws) => {
 });
 server.listen(3000, () => {
     console.log("Server is running on port 3000");
+
 });
 app.use(classicuser_1.default, indexusers_1.default, indexolympics_1.default, indexstats_1.indexstats);

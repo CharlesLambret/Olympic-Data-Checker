@@ -10,6 +10,7 @@ import { indexstats } from "./Statistiques/indexstats";
 import { createServer } from 'http';
 import { Server, WebSocket } from 'ws';
 
+
 const app = express();
 app.use(express.json());
 app.use(
@@ -53,11 +54,13 @@ server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
+
 app.use(
   indexuser, 
   indexadmin, 
   indexolympics,
   indexstats
+
 );
 
 
