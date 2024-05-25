@@ -5,7 +5,7 @@ import cors from "cors";
 import indexuser from './CRUD/users/classicuser';
 import indexadmin from './CRUD/users/admin/indexusers';
 import indexolympics from './CRUD/olympics/indexolympics';
-
+import { indexstats } from "./Statistiques/indexstats";
 import { createServer } from 'http';
 import { Server, WebSocket } from 'ws';
 
@@ -56,6 +56,7 @@ app.use(
   indexuser, 
   indexadmin, 
   indexolympics,
+  indexstats
 );
 
 
