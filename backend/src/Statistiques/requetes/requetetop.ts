@@ -26,7 +26,6 @@ topcountries.get('/top-pays/', async (req, res) => {
             return res.status(400).json({ error: 'Invalid "season" parameter' });
         }
 
-        // Pass undefined for medalType if it's "all"
         const adjustedMedalType = (medalType && medalType.toLowerCase() === 'all') ? undefined : medalType;
 
         const result = await getTopCountries(nombredepays, year, season, adjustedMedalType);

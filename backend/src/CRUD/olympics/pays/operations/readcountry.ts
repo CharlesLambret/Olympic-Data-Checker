@@ -1,30 +1,28 @@
+import { getTotalMedailles } from '../../../../Statistiques/operations/totalmedailles';
 import { MongoConnection } from '../../../../db/call';
 import { ObjectId } from 'mongodb';
-import { TotalMedaillesByType } from '../../../../Statistiques/operations/totalmedailles';
 
 export async function getCountryById(id: string | number) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
     const countries = db.collection("countries");
-    const medailles = TotalMedaillesByType('country', id.toString());
-
+    const medailles = await getTotalMedailles(id.toString(), 'pays');
+    
     try {
         const country = await countries.findOne({ _id: new ObjectId(id) });
         if (!country) {
             return "country not found.";
         }
-        country.medailles = await medailles;
+        const countryObject = { country, medailles };
 
-        return country;
+        return countryObject;
     } catch (error) {
         console.error("Failed to fetch country by ID:", error);
         throw error;
     } finally {
         await client.close();
     }
-
 }
-
 export async function searchCountriesByName(countriesName: string ) {
     const client = await MongoConnection();
     const db = client.db("TP-React");

@@ -1,174 +1,57 @@
 import { MongoConnection } from '../../db/call';
 import { ObjectId } from 'mongodb';
 
-export async function TotalMedailles(type: string, id: string) {
+export async function getTotalMedailles(id: string, type: string) {
+    if (type === 'athlete') {
+        return await getTotalMedaillesAthlete(id);
+    }
+    if (type === 'pays') {
+        return await getTotalMedaillesPays(id);
+    }
+    return { error: 'Invalid type parameter. Only "athlete" and "pays" are allowed.' };
+}
+
+export async function getTotalMedaillesAthlete(id: string) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
     const medailles = db.collection("medailles");
 
-    const validType = type === 'athlete' || type === 'country' || type === 'jeux' ? type : null;
+    try {
+        if (!ObjectId.isValid(id)) {
+            throw new Error('Invalid ID format');
+        }
+        const medals = await medailles.find({ AthleteID: new ObjectId(id) }).toArray();
+        const totalMedals = medals.length;
 
-    if (!validType) {
-        throw new Error('Invalid type. Type must be either "athlete" or "country".');
-    }
-
-    if (validType === 'athlete') {
-        const athleteId = new ObjectId(id);
-        const result = await medailles.aggregate([
-            { $match: { AthleteID: athleteId } },
-            {
-                $group: {
-                    _id: '$AthleteID',
-                    totalMedals: { $sum: 1 }
-                }
-            }
-        ]).toArray();
-        return result[0]?.totalMedals || 0;
-    } else if (validType === 'country') {
-        const countryId = new ObjectId(id);
-        const result = await medailles.aggregate([
-            {
-                $lookup: {
-                    from: 'athletes',
-                    localField: 'AthleteID',
-                    foreignField: '_id',
-                    as: 'athlete'
-                }
-            },
-            { $unwind: '$athlete' },
-            { $match: { 'athlete.PaysID': countryId } },
-            {
-                $lookup: {
-                    from: 'countries',
-                    localField: 'athlete.PaysID',
-                    foreignField: '_id',
-                    as: 'country'
-                }
-            },
-            { $unwind: '$country' },
-            {
-                $group: {
-                    _id: '$country.noc',
-                    totalMedals: { $sum: 1 }
-                }
-            },
-            { $sort: { totalMedals: -1 } }
-        ]).toArray();
-        return result[0]?.totalMedals || 0;
-    }
-    else if (validType === 'jeux') {
-        const jeuxId = new ObjectId(id);
-        const result = await medailles.aggregate([
-            { $match: { JeuxID: jeuxId } },
-            {
-                $group: {
-                    _id: '$JeuxID',
-                    totalMedals: { $sum: 1 }
-                }
-            }
-        ]).toArray();
-        return result[0]?.totalMedals || 0;
+        return { totalMedals };
+    } catch (error) {
+        console.error('Error occurred:', error);
+        return { error: 'Une erreur est survenue' };
+    } finally {
+        client.close();
     }
 }
 
-export async function TotalMedaillesByType(type: string, id: string) {
+export async function getTotalMedaillesPays(id: string) {
     const client = await MongoConnection();
     const db = client.db("TP-React");
     const medailles = db.collection("medailles");
+    const athletes = db.collection('athletes');
 
-    const validType = type === 'athlete' || type === 'country' || type === 'jeux' ? type : null;
+    try {
+        if (!ObjectId.isValid(id)) {
+            throw new Error('Invalid ID format');
+        }
+        const athletesOfCountry = await athletes.find({ PaysID: new ObjectId(id) }).toArray();
+        const athleteIds = athletesOfCountry.map(athlete => athlete._id);
+        const medals = await medailles.find({ AthleteID: { $in: athleteIds.map(id => new ObjectId(id)) } }).toArray();
+        const totalMedals = medals.length;
 
-    if (!validType) {
-        throw new Error('Invalid type. Type must be either "athlete" or "country".');
-    }
-
-    if (validType === 'athlete') {
-        const athleteId = new ObjectId(id);
-        const result = await medailles.aggregate([
-            { $match: { AthleteID: athleteId } },
-            {
-                $group: {
-                    _id: '$AthleteID',
-                    gold: {
-                        $sum: {
-                            $cond: [{ $eq: ["$NomMedaille", "Gold"] }, 1, 0]
-                        }
-                    },
-                    silver: {
-                        $sum: {
-                            $cond: [{ $eq: ["$NomMedaille", "Silver"] }, 1, 0]
-                        }
-                    },
-                    bronze: {
-                        $sum: {
-                            $cond: [{ $eq: ["$NomMedaille", "Bronze"] }, 1, 0]
-                        }
-                    }
-                }
-            }
-        ]).toArray();
-        return result[0] || { gold: 0, silver: 0, bronze: 0 };
-    } else if (validType === 'country') {
-        const countryId = new ObjectId(id);
-        const result = await medailles.aggregate([
-            {
-            $lookup: {
-                from: 'athletes',
-                localField: 'AthleteID',
-                foreignField: '_id',
-                as: 'athlete'
-            }
-            },
-            { $unwind: '$athlete' },
-            { $match: { 'athlete.PaysID': countryId } },
-            {
-            $group: {
-                _id: '$athlete.PaysID',
-                gold: {
-                $sum: {
-                    $cond: [{ $eq: ["$NomMedaille", "Gold"] }, 1, 0]
-                }
-                },
-                silver: {
-                $sum: {
-                    $cond: [{ $eq: ["$NomMedaille", "Silver"] }, 1, 0]
-                }
-                },
-                bronze: {
-                $sum: {
-                    $cond: [{ $eq: ["$NomMedaille", "Bronze"] }, 1, 0]
-                }
-                }
-            }
-            }
-        ]).toArray();
-        
-        return result[0] || { gold: 0, silver: 0, bronze: 0 };
-    } else if (validType === 'jeux') {
-        const jeuxId = new ObjectId(id);
-        const result = await medailles.aggregate([
-            { $match: { JeuxID: jeuxId } },
-            {
-                $group: {
-                    _id: '$JeuxID',
-                    gold: {
-                        $sum: {
-                            $cond: [{ $eq: ["$NomMedaille", "Gold"] }, 1, 0]
-                        }
-                    },
-                    silver: {
-                        $sum: {
-                            $cond: [{ $eq: ["$NomMedaille", "Silver"] }, 1, 0]
-                        }
-                    },
-                    bronze: {
-                        $sum: {
-                            $cond: [{ $eq: ["$NomMedaille", "Bronze"] }, 1, 0]
-                        }
-                    }
-                }
-            }
-        ]).toArray();
-        return result[0] || { gold: 0, silver: 0, bronze: 0 };
+        return { totalMedals };
+    } catch (error) {
+        console.error('Error occurred:', error);
+        return { error: 'Une erreur est survenue' };
+    } finally {
+        client.close();
     }
 }
