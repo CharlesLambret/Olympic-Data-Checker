@@ -6,7 +6,7 @@ export async function TotalMedailles(type: string, id: string) {
     const db = client.db("TP-React");
     const medailles = db.collection("medailles");
 
-    const validType = type === 'athlete' || type === 'country' ? type : null;
+    const validType = type === 'athlete' || type === 'country' || type === 'jeux' ? type : null;
 
     if (!validType) {
         throw new Error('Invalid type. Type must be either "athlete" or "country".');
@@ -76,7 +76,7 @@ export async function TotalMedaillesByType(type: string, id: string) {
     const db = client.db("TP-React");
     const medailles = db.collection("medailles");
 
-    const validType = type === 'athlete' || type === 'country' ? type : null;
+    const validType = type === 'athlete' || type === 'country' || type === 'jeux' ? type : null;
 
     if (!validType) {
         throw new Error('Invalid type. Type must be either "athlete" or "country".');
